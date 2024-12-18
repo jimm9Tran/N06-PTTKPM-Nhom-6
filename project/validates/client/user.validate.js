@@ -53,5 +53,17 @@ module.exports.resetPasswordPost = (req, res, next) => {
         return
     }
 
+    if (!req.body.confirmPassword) {
+        req.flash("erorr", "Vui lòng nhập mật khẩu!");
+        res.redirect("back");
+        return
+    }
+
+    if (req.body.confirmPassword != req.body.password) {
+        req.flash("erorr", "Mật khẩu không khớp vui lòng nhập lại!");
+        res.redirect("back");
+        return;
+    }
+
     next();
 }
