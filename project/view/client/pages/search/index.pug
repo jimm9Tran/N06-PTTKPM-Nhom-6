@@ -1,0 +1,51 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+    .container.my-3
+        .row
+            .col-12
+                +box-head(pageTitle)
+
+        if keyword
+            .search-result
+                h3 Kết quả tìm kiếm cho "#{keyword}":
+
+                .product-container
+                    if products.length > 0
+                        each item in products
+                            .product-card
+                                a(href=`/products/detail/${item.slug}`)
+                                    img.product-image(src=item.thumbnail alt="image")
+                                    .product-info
+                                        h4.product-category Giày Sneaker
+                                        a(href=`/products/detail/${item.slug}`)
+                                            h3.product-title= item.title
+                                        p.product-price #{item.price.toLocaleString()} ₫
+                                        if item.priceNew
+                                            p.discount-price #{item.priceNew.toLocaleString()} ₫
+                    else
+                        p Không có sản phẩm nào khớp với từ khóa "#{keyword}". 
+
+        // Phần phân trang
+        if totalPages > 1
+            nav.pagination
+                ul.pagination-list
+                    // Nút "Previous" - Hiển thị nếu không phải trang đầu tiên
+                    if currentPage > 1
+                        li.page-item
+                            a.page-link(href=`?page=${currentPage - 1}&keyword=${keyword}`) &#8249;
+
+                    // Hiển thị số trang
+                    each page in Array(totalPages).fill().map((_, i) => i + 1)
+                        if page === currentPage
+                            li.page-item.active
+                                a.page-link(href=`?page=${page}&keyword=${keyword}`)= page
+                        else
+                            li.page-item
+                                a.page-link(href=`?page=${page}&keyword=${keyword}`)= page
+
+                    // Nút "Next" - Hiển thị nếu không phải trang cuối cùng
+                    if currentPage < totalPages
+                        li.page-item
+                            a.page-link(href=`?page=${currentPage + 1}&keyword=${keyword}`) &#8250;

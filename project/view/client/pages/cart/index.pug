@@ -1,0 +1,60 @@
+extends ../../layouts/default.pug 
+include ../../mixins/box-head.pug
+include ../../mixins/alert.pug
+
+block main 
+    +alert-success(3000)
+    .cart-container
+        .cart-content
+            table.cart-table
+                thead
+                    tr
+                        th SẢN PHẨM
+                        th GIÁ
+                        th SỐ LƯỢNG
+                        th TẠM TÍNH
+                        th
+                        
+                tbody
+                    if cartDetail.products.length > 0
+                        each item, index in cartDetail.products
+                            tr
+                                td.product
+                                    img(src=item.productInfor.thumbnail alt=item.productInfor.title)
+                                    .product-info
+                                        a.product-name(href=`/products/detail/${item.productInfor.slug}`) #{item.productInfor.title}
+                                td.price #{item.productInfor.price}₫
+                                td.quantity
+                                    button.quantity-btn.minus-btn(type="button", data-id=item.product_id) -
+                                    input.quantity-input(
+                                        type="number" 
+                                        value=item.quantity
+                                        min="1"
+                                        name="quantity"
+                                        product-id=item.product_id
+                                    )
+                                    button.quantity-btn.plus-btn(type="button", data-id=item.product_id) +
+                                td.subtotal #{item.totalPrice}₫
+                                td
+                                    // X button for removing item
+                                    a.remove-item(href=`/cart/delete/${item.product_id}`) x
+                        a.continue-shopping(href="/") ← TIẾP TỤC XEM SẢN PHẨM
+                    else
+                        h1 Không có sản phẩm nào trong giỏ hàng
+
+        .cart-summary
+            h3 CỘNG GIỎ HÀNG
+            .summary-item
+                p Tạm tính:
+                p #{cartDetail.totalPrice}₫
+            .summary-item
+                p Tổng:
+                p #{cartDetail.totalPrice}₫
+            a.checkout-btn(href="/checkout") TIẾN HÀNH THANH TOÁN
+            .promo-code
+                label Phiếu ưu đãi
+                input(type="text" placeholder="Mã ưu đãi")
+                button.apply-btn Áp dụng
+
+
+    script(src="/js/cart.js")

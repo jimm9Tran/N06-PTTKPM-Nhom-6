@@ -1,0 +1,44 @@
+include ../mixins/sub-menu.pug
+
+header.logo
+    .fixed
+        a(href="/")
+            img(src="/images/logo.png", alt="image")
+
+        nav
+            ul.menu
+                li.sub-menu
+                    - const pathProduct = "/products";
+                    a(href=pathProduct) Giày
+                        +sub-menu(layoutProductsCategory, pathProduct)
+                li
+                    a(href="#") Tin Tức
+                li
+                    a(href="#") Về chúng tôi
+                li
+                    a(href="#") Helps
+
+        
+
+        .right-section
+            .search-container
+                form(action="/search", method="GET")
+                    input(type="text", placeholder="Tìm kiếm", name="keyword")
+                    button(type="submit")
+                        i.icon-search
+            .cart
+                a(href="/cart")
+                    img(src="/images/cart.png", alt="Giỏ hàng")
+                    span.cart-count #{miniCart ? miniCart.totalQuantity : 0}
+
+            if (user)
+                a(href="/user/logout") Đăng xuất
+            else
+                .dk 
+                    a(href="/user/register") Đăng ký
+                .dk 
+                    a(href="/user/login") Đăng nhập
+
+                    
+
+

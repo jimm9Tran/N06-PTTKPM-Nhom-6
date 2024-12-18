@@ -1,0 +1,159 @@
+extends ../../layouts/default1.pug
+include ../../mixins/box-head.pug 
+include ../../mixins/product-layout.pug
+include ../../mixins/alert.pug 
+
+block main
+    +alert-success(3000)
+    
+    <div class="carousel-item2"><img src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/03/onitsukatiger_hp_mexico66_cud_ss.webp" alt="Image 4"/></div>
+
+
+    <h2 class="brand-title">Các sản phẩm nổi bật:</h2>
+    <p class="brand-description">Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal nhất mùa thu đông 2024</p>
+        .section-products-featured.my-5
+            .container 
+                each item in productsFeatured
+                    .product-card
+                        .inner-image
+                            img.product-image(src=item.thumbnail, alt=item.title)
+                            if(item.featured == "1")
+                                .inner-featured Nổi bật
+                        .product-info
+                            .product-title
+                                a(href=`/products/detail/${item.slug}`) #{item.title}
+                            .product-price #{Number(item.price).toLocaleString('vi-VN')} đ
+            <h3 class="see-more"><a href="/products">Xem thêm</a></h3>
+
+
+    <img src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/09/AJ1_Mocha-Banners-ENPrimary_Desk-1-2048x312.webp" alt="image" style="width: 100%; height: 180px;"/>
+
+    <h2 class="brand-title">Các thương hiệu nổi bật:</h2>
+    <p class="brand-description">Mặt hàng đến từ các thương hiệu nổi bật</p>
+    section.famous-brands
+        .line1-1
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/06/Nike-Air-Force-1-Low-Travis-Scott-Cactus-Jack.png" alt="image")
+                    h3 Nike
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/01/IE0586.webp" alt="image")
+                    h3 Adidas
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/04/895934_01.jpg_8223ed9759b54c8783260d28aad3cb73-600x347.png" alt="image")
+                    h3 Jordan
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/10/ABPT043-11-A-1-600x298.png" alt="image")
+                    h3 Lining
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/01/Giay-New-Balance-530-Retro-Runni-removebg-preview.png" alt="image")
+                    h3 New Balance
+        .line1-2
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/04/brand-4.png" alt="image" onclick="")
+                    h3 MLB
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/06/De%CC%81p-Yeezy-Slide-chi%CC%81nh-ha%CC%83ng.png" alt="image")
+                    h3 Yeezy slide
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/01/nike-kobe-6-protro-reverse-grinc-removebg-preview.png" alt="image")
+                    h3 Nike Kobe
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/06/Nike-LeBron-20-Time-Machine.png" alt="image")
+                    h3 Nike LeBron
+            article.item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/04/Giay-Puma-Palermo-Leather-White-Black-396464-01-1-600x247.png" alt="image")
+                    h3 Puma
+
+
+    <h2 class="brand-title">Các sản phẩm mới ra mắt:</h2>
+        <p class="brand-description">Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal nhất mùa thu đông 2024</p>
+            .section-products-featured.my-5
+                .container 
+                    each item in productsNew
+                        .product-card
+                            .inner-image
+                                img.product-image(src=item.thumbnail, alt=item.title)
+                                if(item.featured == "1")
+                                    .inner-featured Nổi bật
+                            .product-info
+                                .product-title
+                                    a(href=`/products/detail/${item.slug}`) #{item.title}
+                                .product-price #{Number(item.price).toLocaleString('vi-VN')} đ
+                <h3 class="see-more"><a href="/products">Xem thêm</a></h3>
+        
+
+    <img src="/images/advertises-images/off-white-sneakers-belowretail.jpeg" alt="image" style="width: 100%; height: 320px; margin: 15px 0px;"/>
+
+
+    h2 Các sản phẩm đến từ thương hiệu Adidas
+    p Mua sắm ngay giày Yeezy, samba, giày chạy Adidas cho mùa hè 2024!!!
+    section.adidas-product
+        a(href="/")
+            img(src="https://brand.assets.adidas.com/image/upload/running_2024_tier1_sponsored_boston_marathon_reactive_marathon_winner_launch_plp_image_collection_1_d_d4c72a4410.jpg" alt="image")
+        
+        .product-container
+            .line
+                each product in products.slice(0, 6)
+                    article.product
+                        a(href=`/products/detail/${product.slug}`)
+                            img(src=product.thumbnail alt=product.title)
+                            h3= product.title
+                            .product-price #{Number(product.price).toLocaleString('vi-VN')} đ
+
+            .line
+                each product in products.slice(6, 12)
+                    article.product
+                        a(href=`/products/detail/${product.slug}`)
+                            img(src=product.thumbnail alt=product.title)
+                            h3= product.title
+                            .product-price #{Number(product.price).toLocaleString('vi-VN')} đ
+
+    .carousel-item2
+        <img src="https://cdn.authentic-shoes.com/wp-content/uploads/2024/07/663742.webp" alt="image"/>
+
+    section.news
+        button.arrow.left-arrow(onclick="scrollCarousel(-1)") &#8249;
+        .carousel-menu-news
+            .item
+                a(href="#")
+                    img(src="https://sneakernews.com/wp-content/uploads/2023/03/air-jordan-4-bred-reimagined-2024-info.jpg", alt="image")
+                    h3 Những phiên bản Jordan 4 cập bến năm 2024
+            .item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/05/nike-offwhite-the-ten_5d63d4a3609d41cf83583704e90914a3_2048x2048.jpeg", alt="image")
+                    h3 Bộ sưu tập Off-White™ x Nike “The Ten” sẽ được đem ra bán đấu giá
+            .item
+                a(href="#")
+                    img(src="https://cdn.authentic-shoes.com/wp-content/uploads/2023/05/c6_a1ng-hi_e1_bb_87u-th_e1_bb_9di-trang-_c4_91_e1_bb_8bch-th_e1_bb_a7_832caeebf19d4000bb82682de0c62905_2048x2048.png", alt="image")
+                    h3 Liệu 2 anh em nhà Adidas và Puma có đường ai nấy đi sau những biến động?
+            .item
+                a(href="#")
+                    img(src="/images/advertises-images/nike-air-force-1-low-coffee.jpg", alt="image")
+                    h3 Nike Air Force 1 Low “Coffee” khi thức uống gây nghiện lên ngôi
+            .item
+                a(href="#")
+                    img(src="/images/advertises-images/phil-knight-shoes-dog.jpg", alt="image")
+                    h3 Hành trình xây dựng đế chế giày thể thao và khối tài sản hơn 62 tỷ USD của ông chủ Nike
+            .item
+                a(href="#")
+                    img(src="/images/advertises-images/jordan-1-85's-history.jpeg", alt="image")
+                    h3 Jordan 1 High 85 là gì? Những phiên bản nổi bật nhất của 2023
+            .item
+                a(href="#")
+                    img(src="/images/advertises-images/phil-knight-shoes-dog.jpg", alt="image")
+                    h3 Dòng thời gian và lịch sử về các dòng của Nike Air Max (Phần 1)
+            .item
+                a(href="#")
+                    img(src="/images/advertises-images/AM-history.jpeg", alt="image")
+                    h3 Dòng thời gian và lịch sử về các dòng của Nike Air Max (Phần 1)
+        button.arrow.right-arrow(onclick="scrollCarousel(1)") &#8250;

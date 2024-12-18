@@ -1,0 +1,105 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Footer container */
+.ft {
+    display: flex;
+    flex-wrap: wrap; /* Allows content to wrap on smaller screens */
+    justify-content: space-between; /* Distributes content evenly */
+    max-width: 100%; /* Full-width responsive design */
+    padding: 20px;
+    background-color: #f8f8f8; /* Softer background color */
+    border-top: 1px solid #ccc; /* Lighter border color */
+    color: #333; /* Softer text color */
+}
+
+/* Content sections */
+.ft .content {
+    flex: 1 1 300px; /* Flex-basis set for responsiveness */
+    margin-bottom: 20px; /* Adds space between sections */
+    min-width: 250px; /* Minimum width for better responsiveness */
+}
+
+.ft .content a img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px; /* Adds space below the logo */
+}
+
+/* Section titles */
+.ft .content legend {
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    color: #111;
+}
+
+/* Social icons section */
+.ft .content .sile1 a img {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+/* Policy section styling */
+.ft .content .content1 {
+    margin-top: 25px;
+}
+
+.ft .content .content1 legend {
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+/* Text paragraphs */
+.ft .content p {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6; /* Better readability */
+    font-size: 14px; /* Slightly smaller, cleaner font size */
+    color: #555; /* Lighter text color */
+    max-width: 300px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ft {
+        flex-direction: column; /* Stack content vertically */
+        align-items: center; /* Center-align content */
+    }
+
+    .ft .content {
+        text-align: center; /* Center text on smaller screens */
+        margin-left: 0;
+    }
+
+    .ft .content a img {
+        margin: 0 auto; /* Center the image */
+    }
+
+    .ft .content p {
+        max-width: 100%; /* Allow text to take up full width */
+    }
+}
+
+@media (max-width: 480px) {
+    .ft {
+        padding: 15px; /* Reduce padding for small screens */
+    }
+
+    .ft .content {
+        min-width: 100%; /* Allow content to fill the screen */
+    }
+
+    .ft .content p {
+        font-size: 13px; /* Smaller font size for mobile */
+    }
+}

@@ -1,0 +1,38 @@
+extends ../../layouts/default.pug 
+include ../../mixins/box-head.pug
+
+block main 
+    .container.my-3 
+        .row
+            .col-12 
+                +box-head(pageTitle)
+
+        .product-container
+            each item in products
+                .product-card
+                    a(href=`/products/detail/${item.slug}`)
+                        img.product-image(src=item.thumbnail alt="image")
+                        .product-info
+                            h4.product-category Giày Sneaker
+                            a(href=`/products/detail/${item.slug}`)
+                                h3.product-title= item.title
+                            p.product-price #{item.price.toLocaleString()} ₫
+                            if item.priceNew
+                                p.discount-price #{item.priceNew.toLocaleString()} ₫
+        
+        // Phần phân trang
+        nav.pagination
+            ul.pagination-list
+                if currentPage > 1
+                    li.page-item
+                        a.page-link(href=`?page=${currentPage - 1}`) &#8249;
+                each page in [...Array(totalPages).keys()].map(n => n + 1)
+                    if page === currentPage
+                        li.page-item.active
+                            a.page-link(href=`?page=${page}`)= page
+                    else
+                        li.page-item
+                            a.page-link(href=`?page=${page}`)= page
+                if currentPage < totalPages
+                    li.page-item
+                        a.page-link(href=`?page=${currentPage + 1}`) &#8250;
