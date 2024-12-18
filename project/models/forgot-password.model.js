@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const { forgotPassword } = require("../controllers/client/user.controller");
-// const generate = require("../helpers/generate");
 
 const forgotPasswordSchema = new mongoose.Schema(
     {

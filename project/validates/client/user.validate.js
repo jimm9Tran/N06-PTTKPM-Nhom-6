@@ -38,7 +38,17 @@ module.exports.loginPost = (req, res, next) => {
 
 module.exports.forgotPasswordPost = (req, res, next) => {
     if (!req.body.email){
-        req.flash("erorr","Vui lòng nhập email!");
+        req.flash("erorr", "Vui lòng nhập email!");
+        res.redirect("back");
+        return
+    }
+
+    next();
+}
+
+module.exports.resetPasswordPost = (req, res, next) => {
+    if (!req.body.password){
+        req.flash("erorr", "Vui lòng nhập mật khẩu!");
         res.redirect("back");
         return
     }
