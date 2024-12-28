@@ -5,10 +5,7 @@ const flash = require('express-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const moment = require("moment");
-const { Server } = require("socket.io");
-const http = require("http");
-
-const path = require('path'); 
+const path = require('path'); // Add this line
 
 require("dotenv").config();
 
@@ -21,12 +18,6 @@ const routeAdmin = require("./routers/admin/index.route");
 const app = express()
 const port = process.env.PORT;
   
-const server = http.createServer(app);
-const io = new Server(server);
-io.on('connection', (socket) => {
-    console.log("a user connected", socket.id);
-});
-
 app.use(methodOverride("_method"));
 
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
@@ -59,6 +50,6 @@ app.get("*", (req, res) => {
     });
 });
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 }); 
