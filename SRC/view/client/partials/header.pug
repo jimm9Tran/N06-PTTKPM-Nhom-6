@@ -31,6 +31,9 @@ header.logo
                     img(src="/images/cart.png", alt="Giỏ hàng")
                     span.cart-count #{miniCart ? miniCart.totalQuantity : 0}
 
+                a(href="/chat") Chat
+            
+
             if (user)
                 a(href="/user/info") #{user.fullName} 
                 a(href="/user/logout") Đăng xuất
