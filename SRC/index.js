@@ -7,7 +7,7 @@ const session = require('express-session');
 const moment = require("moment");
 const path = require('path'); 
 const http = require('http');
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
 
 require("dotenv").config();
 
@@ -52,7 +52,7 @@ route(app);
 routeAdmin(app);
 app.get("*", (req, res) => {
     res.render("client/pages/errors/404", {
-        pageTitl: "404 Not Found"
+        pageTitle: "404 Not Found"
     });
 });
 

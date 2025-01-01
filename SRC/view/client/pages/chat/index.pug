@@ -7,20 +7,33 @@ block main
             .col-12 
                 +box-head("Chat")
 
+        .row 
+            .col-12
+                .chat(my-id=user.id)
+                    div(class="inner-body")
+                        //- .inner-comming 
+                        //-     .inner-name 
+                        //-     .inner-content
+                        
+                        //- .inner-outgoing
+                        //-     .inner-conent
+                        each chat in chats
+                            div(class=(chat.user_id == user.id ? "inner-outgoing" : "inner-incomming"))
+                                if (chat.user_id != user.chat)
+                                    .inner-name #{chat.inforUser.fullName}                       
+                                .inner-content #{chat.content}
+                                    
+                    div(clas="inner-foot")
 
-            div(class="chat")
-                div(class="inner-body")
-                div(clas="inner-foot")
-
-                    form(
-                        class="inner-form"
-                        action=""
-                    )
-                        input(
-                            text="text"
-                            placeholder="Nhập nội dung..."
-                            name="content"
+                        form(
+                            class="inner-form"
+                            action=""
                         )
+                            input(
+                                text="text"
+                                placeholder="Nhập nội dung..."
+                                name="content"
+                            )
 
-                        button 
-                            i.fa-solid.fa-paper-plane
+                            button 
+                                i.fa-solid.fa-paper-plane
