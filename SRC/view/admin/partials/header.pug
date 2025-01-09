@@ -1,18 +1,15 @@
 //- header.pug
-header.admin-header
+header.admin-header.navbar.navbar-light.bg-light
   .container-fluid
-    .row.align-items-center.justify-content-between
-      .col-md-3.col-6
-        .inner-logo
-          a#toggle-sidebar(href="#", aria-label="Toggle Sidebar")
-            img(src="/images/avatar.png" alt="Admin Logo" class="logo-img")
-          span.ms-2.d-none.d-md-inline-block Admin
-      .col-md-9.col-6.text-end
-        .admin-actions
-          a.btn.btn-light.btn-sm.admin-account(href=`${prefixAdmin}/my-account`)
-            i.fas.fa-user-circle.me-2
-            |  #{user.fullName}
-          
-          a.btn.btn-danger.btn-sm.admin-logout(href=`${prefixAdmin}/auth/logout`)
-            i.fas.fa-sign-out-alt.me-2
-            |  Đăng xuất
+    .navbar-brand
+      img(src="/images/avatar.png" alt="Admin Logo" class="logo-img me-2")
+      | Admin Panel
+    ul.nav
+      li.nav-item
+        a.nav-link(href=`${prefixAdmin}/my-account`)
+          i.fas.fa-user-circle.me-2
+          | #{user.fullName}
+      li.nav-item
+        a.nav-link.text-danger(href=`${prefixAdmin}/auth/logout`)
+          i.fas.fa-sign-out-alt.me-2
+          | Đăng xuất

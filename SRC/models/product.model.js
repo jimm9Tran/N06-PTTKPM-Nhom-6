@@ -25,6 +25,12 @@ const productSchema = new mongoose.Schema({
     warrantyInformation: String,
     shippingInformation: String,
     availabilityStatus: String,
+    sizes: [
+        {
+            size: String, // Kích thước (VD: "40", "41", "42")
+            quantity: Number // Số lượng tương ứng với kích thước
+        }
+    ],
     reviews: [String],
     returnPolicy: String,
     minimumOrderQuantity: Number,
