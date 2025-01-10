@@ -21,7 +21,7 @@ module.exports.registerPost = (req, res, next) => {
 }
 
 module.exports.loginPost = (req, res, next) => {
-    if (!req.body.email) {
+    if (!req.body.fullName) {
         req.flash("error", "Vui lòng nhập email!");
         res.redirect("back");
         return;
