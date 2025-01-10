@@ -166,7 +166,52 @@ if (uploadImage) {
 
 // End Upload Image
 
-// slider
+// Sort
+const sort = document.querySelector("[sort]");
+if (sort) {
+    const sortSelect = sort.querySelector("[sort-select]");
+    const sortClear = sort.querySelector("[sort-clear]");
+
+    // Xử lý sự kiện thay đổi dropdown sắp xếp
+    if (sortSelect) {
+        sortSelect.addEventListener("change", (e) => {
+            const value = e.target.value;
+            const [sortKey, sortValue] = value.split("-");
+
+            // Cập nhật tham số sắp xếp vào URL
+            url.searchParams.set("sortKey", sortKey);
+            url.searchParams.set("sortValue", sortValue);
+
+            // Tải lại trang với URL mới
+            window.location.href = url.toString();
+        });
+    }
+
+    // Xử lý nút Clear (Xóa sắp xếp)
+    if (sortClear) {
+        sortClear.addEventListener("click", () => {
+            // Xóa tham số sắp xếp
+            url.searchParams.delete("sortKey");
+            url.searchParams.delete("sortValue");
+
+            // Tải lại trang
+            window.location.href = url.toString();
+        });
+    }
+
+    // Giữ trạng thái đã chọn cho dropdown khi reload trang
+    const sortKey = url.searchParams.get("sortKey");
+    const sortValue = url.searchParams.get("sortValue");
+    if (sortKey && sortValue) {
+        const stringSort = `${sortKey}-${sortValue}`;
+        const optionSelected = sortSelect.querySelector(`option[value="${stringSort}"]`);
+
+        if (optionSelected) {
+            optionSelected.selected = true;
+        }
+    }
+}
+// End Sort
 
 // script.js
 
