@@ -19,7 +19,6 @@ const DarkMode = () => {
   // console.log(element);
   // console.log("Current theme:", theme);
 
-
   return (
     <div className='relative '>
         <img
