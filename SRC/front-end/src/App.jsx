@@ -11,6 +11,7 @@ import Image1 from './assets/hero/air-jordan-1-low-paris-removebg-preview.png';
 import Image2 from './assets/hero/headphone.png';
 import Popup from './components/Popup/Popup'
 import Servies from './components/Services/Servies'
+import Partners from './components/Partners/Partners'
 
 const BannerData={
   discount: "30%",
@@ -35,8 +36,9 @@ function App() {
       <Products/>
       <Banner data={BannerData}/>
       <Blogs />
-      <hr />
+      {/* <hr /> */}
       <Popup />
+      <Partners />
       <Footer />
     </div>
   )
