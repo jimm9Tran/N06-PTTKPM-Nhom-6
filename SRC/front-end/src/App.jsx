@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from 'react'
 import './App.css'
 import Navbar from './components/Navbar/Navbar'
@@ -13,6 +14,9 @@ import Popup from './components/Popup/Popup'
 import Servies from './components/Services/Servies'
 import Partners from './components/Partners/Partners'
 
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const BannerData={
   discount: "30%",
   title: "Giày Nike Air Jordan 1 Low ‘Paris’ CV3043-100",
@@ -26,6 +30,18 @@ const BannerData={
 
 function App() {
   const [count, setCount] = useState(0)
+
+  React.useEffect(() => {
+    AOS.init(
+      {
+        duration: 800,
+        easing: "ease-in-sine",
+        delay: 100,
+        offset: 100,
+      }
+    );
+    AOS.refresh();
+  }, []);
 
   return (
     <div className='bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden'>
