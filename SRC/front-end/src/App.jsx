@@ -5,9 +5,12 @@ import Hero from './components/Hero/Hero'
 import Footer from './components/Footer/Footer'
 import Products from './components/Products/Products'
 import Banner from './components/Banner/Banner'
+import Blogs from './components/Blogs/Blogs'
 
 import Image1 from './assets/hero/air-jordan-1-low-paris-removebg-preview.png';
 import Image2 from './assets/hero/headphone.png';
+import Popup from './components/Popup/Popup'
+import Servies from './components/Services/Servies'
 
 const BannerData={
   discount: "30%",
@@ -27,8 +30,13 @@ function App() {
     <div className='bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden'>
       <Navbar />
       <Hero />
+      <Servies />
       <Banner data={BannerData}/>
       <Products/>
+      <Banner data={BannerData}/>
+      <Blogs />
+      <hr />
+      <Popup />
       <Footer />
     </div>
   )

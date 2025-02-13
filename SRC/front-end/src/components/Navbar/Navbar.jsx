@@ -56,7 +56,7 @@ const Navbar = () => {
                         className='text-primary font-semibold tracking-widest text-2xl uppercase
                         sm:text-3xl'
                     >
-                        JmShop
+                        JM Shoes
                     </a>
                     {/* Menu Items */}
                     <div className='hidden lg:block'>
