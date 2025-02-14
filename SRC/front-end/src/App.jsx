@@ -1,45 +1,53 @@
 import React from "react";
-import { useState } from 'react'
-import './App.css'
+
 import Navbar from './components/Navbar/Navbar'
 import Hero from './components/Hero/Hero'
 import Footer from './components/Footer/Footer'
+import Servies from './components/Services/Servies'
 import Products from './components/Products/Products'
 import Banner from './components/Banner/Banner'
 import Blogs from './components/Blogs/Blogs'
+import Partners from './components/Partners/Partners'
+import Popup from './components/Popup/Popup'
 
 import Image1 from './assets/hero/air-jordan-1-low-paris-removebg-preview.png';
-import Image2 from './assets/hero/headphone.png';
-import Popup from './components/Popup/Popup'
-import Servies from './components/Services/Servies'
-import Partners from './components/Partners/Partners'
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const BannerData={
-  discount: "30%",
-  title: "Giày Nike Air Jordan 1 Low ‘Paris’ CV3043-100",
-  date: "2024",
+const BannerData = {
+  discount: "30% OFF",
+  title: "Nike",
+  date: "10 Jan to 28 Jan",
   img: Image1,
-  title2: "Air Jordan 1 Low",
-  title3: "Nike",
-  title4: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem possimus debitis voluptates voluptas repudiandae voluptatem.",
+  title2: "Nike Air Jordan",
+  title3: "Winter Sale",
+  title4:
+    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque reiciendis",
   bgColor: "#f42c37",
 };
 
+const BannerData2 = {
+  discount: "30% OFF",
+  title: "Happy Hours",
+  date: "14 Jan to 28 Jan",
+  img: Image1,
+  title2: "Smart Solo",
+  title3: "Winter Sale",
+  title4:
+    "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque reiciendis",
+  bgColor: "#2dcc6f",
+};
+
 function App() {
-  const [count, setCount] = useState(0)
 
   React.useEffect(() => {
-    AOS.init(
-      {
-        duration: 800,
-        easing: "ease-in-sine",
-        delay: 100,
-        offset: 100,
-      }
-    );
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-sine",
+      delay: 100,
+      offset: 100,
+    });
     AOS.refresh();
   }, []);
 
@@ -50,7 +58,7 @@ function App() {
       <Servies />
       <Banner data={BannerData}/>
       <Products/>
-      <Banner data={BannerData}/>
+      <Banner data={BannerData2}/>
       <Blogs />
       {/* <hr /> */}
       <Popup />

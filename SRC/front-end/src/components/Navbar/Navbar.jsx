@@ -6,22 +6,22 @@ import DarkMode from './DarkMode';
 const MenuLinks = [
     {
         id: 1,
-        name: "Home",
+        name: "Trang chủ",
         link: "/#",
     },
     {
         id: 2,
-        name: "Shop",
-        link: "/#shop",
+        name: "Giày",
+        link: "/#products",
     },
     {
         id: 3,
-        name: "About",
+        name: "Giới thiệu",
         link: "/#about",
     },
     {
         id: 4,
-        name: "Blogs",
+        name: "Tin tức - Sự kiện",
         link: "/#blog",
     },
 ];
@@ -29,12 +29,12 @@ const MenuLinks = [
 const DropdownLinks = [
     {
         id: 1,
-        name: "Trending Products",
+        name: "Sản phẩm nổi bật",
         link: "/#",
     },
     {
         id: 2,
-        name: "Best Selling",
+        name: "Sản phẩm bán chạy",
         link: "/#",
     },
     {
@@ -80,7 +80,7 @@ const Navbar = () => {
                             {/* Dropdown  */}
                             <li className='relative cursor-pointer group'>
                                 <a href="#" className='flex items-center gap-[2px] font-semibold text-gray-500 dark:hover:text-white py-2'> 
-                                    Quick Links 
+                                    Tuỳ chọn 
 
                                     <span>
                                         <FaCaretDown className='group-hover:rotate-180 duration-300' />
@@ -115,7 +115,7 @@ const Navbar = () => {
                 <div className='flex justify-between items-center gap-4'>
                     {/* Search Bar section */}
                     <div className='relative group hidden sm:block'>
-                            <input type="text" placeholder='Search' className='search-bar' />
+                            <input type="text" placeholder='Tìm kiếm' className='search-bar' />
                             <IoMdSearch className='text-xl text-gray-600 dark:text-gray-400
                                  group-hover:text-primary absolute 
                                  top-1/2 -translate-y-1/2 right-3 duration-200' 

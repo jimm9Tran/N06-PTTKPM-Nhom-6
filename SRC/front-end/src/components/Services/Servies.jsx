@@ -11,28 +11,29 @@ const ServiceData = [
   {
     id: 1,
     icon: <FaCarSide className='text-4xl md:text-5xl text-primary' />,
-    title: "Free Shipping",
-    description: "Free Shipping On All Order",
+    title: "Giao hàng miễn phí",
+    description: "Miễn phí giao hàng cho mọi đơn hàng",
   },
   {
     id: 2,
     icon: <FaCheckCircle className='text-4xl md:text-5xl text-primary' />,
-    title: "Safe Money",
-    description: "15 Days Money Back",
+    title: "An tâm mua sắm",
+    description: "Hoàn tiền trong 15 ngày",
   },
   {
     id: 3,
     icon: <FaWallet className='text-4xl md:text-5xl text-primary' />,
-    title: "Secure Payment",
-    description: "All Payment Secure",
+    title: "Thanh toán an toàn",
+    description: "Tất cả giao dịch được bảo mật",
   },
   {
     id: 4,
     icon: <FaHeadphonesAlt className='text-4xl md:text-5xl text-primary' />,
-    title: "Online Supoort 24/7",
-    description: "Technical support 24/7",
+    title: "Hỗ trợ trực tuyến 24/7",
+    description: "Hỗ trợ kỹ thuật 24/7",
   }
 ];
+
 
 const Servies = () => {
   return (
