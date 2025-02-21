@@ -6,7 +6,8 @@ mongoose.plugin(slug);
 const productSchema = new mongoose.Schema({
     title: String,
     product_category_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "productCategory",
         default: ""
     },
     description: String,
@@ -31,8 +32,8 @@ const productSchema = new mongoose.Schema({
     availabilityStatus: String,
     sizes: [
         {
-            size: String, // Kích thước (VD: "40", "41", "42")
-            quantity: Number // Số lượng tương ứng với kích thước
+            size: String,
+            quantity: Number,
         }
     ],
     reviews: [String],

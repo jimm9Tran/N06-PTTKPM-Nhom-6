@@ -17,3 +17,25 @@
     @apply w-full rounded-full border border-gray-300 dark:border-gray-500 dark:bg-gray-800 px-2 py-1 mb-4;
   }
 }
+
+.section_product .box-image, 
+.related-products-wrapper .box-image {
+    height: 300px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px #f0eeee;
+    border-radius: 12px;
+}
+
+.box-image {
+    height: auto;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.box, .box-image, .box-text {
+    transition: opacity .3s, transform .3s, background-color .3s;
+}

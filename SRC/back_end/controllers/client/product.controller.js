@@ -9,13 +9,11 @@ module.exports.index = async (req, res) => {
         const limitItem = 12;
         const page = req.query.page ? parseInt(req.query.page) : 1;
 
-        // Tính tổng số sản phẩm
         const totalProducts = await Product.countDocuments({
             status: "active",
             deleted: false
         });
 
-        // Lấy các sản phẩm theo phân trang
         const products = await Product.find({
             status: "active",
             deleted: false
@@ -24,14 +22,12 @@ module.exports.index = async (req, res) => {
             .skip((page - 1) * limitItem)
             .limit(limitItem);
 
-        // Tính giá mới sau khi giảm giá
         const newProducts = products.map(item => {
-            const discountFactor = (100 - item.discountPercentage) / 100; // Tính giá giảm
+            const discountFactor = (100 - item.discountPercentage) / 100;
             item.priceNew = item.price * discountFactor;
             return item;
         });
 
-        // Lấy danh mục sản phẩm
         const productsCategory = await ProductCategory.find({
             deleted: false
         });
@@ -39,7 +35,6 @@ module.exports.index = async (req, res) => {
 
         const totalPages = Math.ceil(totalProducts / limitItem);
 
-        // Trả dữ liệu dưới dạng JSON
         res.json({
             products: newProducts,
             newProductCategory: newProductCategory,

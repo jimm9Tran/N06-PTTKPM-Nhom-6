@@ -19,6 +19,8 @@ function Products() {
       });
   }, []);
 
+  console.log(products);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -27,7 +29,7 @@ function Products() {
     <div>
       <div className="container">
         {/* Header section */}
-        <Heading title="Featured Products" subtitle={"Check Out Our Top Products"} />
+        <Heading title="Most Popular Sneaker" subtitle={"Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal"} />
 
         {/* Hiển thị các sản phẩm */}
         <ProductCard data={products} />

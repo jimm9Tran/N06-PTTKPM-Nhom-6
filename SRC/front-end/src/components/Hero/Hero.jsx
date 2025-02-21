@@ -1,40 +1,24 @@
 import React from 'react';
 import Slider from "react-slick";
-import Image1 from "../../assets/hero/air-jordan-1-low-paris-removebg-preview.png";
 import Button from '../Shared/Button';
+
+import Image1 from "../../assets/hero/air-jordan-1-low-paris-removebg-preview.png";
+import Image2 from "../../assets/hero/Travis-Scott-Air-Jordan-1-Low-OG-1-600x247-removebg-preview.png";
 
 const HeroData = [
   {
     id: 1,
-    img: Image1,
-    subtitle: "Nike Air",
-    title: "Nike Air Jordan 1",
-    title2: "SNEAKER",
-    description: "nothing to write"
+    img: Image2,
+    subtitle: "Giày Nike Jordan 1 Low OG SP x Travis Scott ‘Medium Olive’ DM7866-200",
+    title: "Air Jordan 1 Low",
+    title2: "Travis Scott",
   },
   {
     id: 2,
     img: Image1,
-    subtitle: "Nike Air",
+    subtitle: "Giày Nike Air Jordan 1 Low ‘Paris’ CV3043-100",
     title: "Nike Air Jordan 1",
     title2: "SNEAKER",
-    description: "nothing to write"
-  },
-  {
-    id: 3,
-    img: Image1,
-    subtitle: "Nike Air",
-    title: "Nike Air Jordan 1",
-    title2: "SNEAKER",
-    description: "nothing to write"
-  },
-  {
-    id: 4,
-    img: Image1,
-    subtitle: "Nike Air",
-    title: "Nike Air Jordan 1",
-    title2: "SNEAKER",
-    description: "nothing to write"
   },
 ];
 
@@ -83,7 +67,7 @@ const Hero = () => {
                       data-aos="zoom-out"
                       data-aos-duration="500"
                       data-aos-once="true"
-                      className='text-[50px] sm:text-[80px] md:text-[100px] dark:text-white/5 xl:text-[150px] font-bold text-gray-300 uppercase leading-none'
+                      className='whitespace-nowrap text-[50px] sm:text-[80px] md:text-[100px] dark:text-white/5 xl:text-[150px] font-bold text-gray-300 uppercase leading-none'
                     >
                       {data.title2}
                     </h1>
@@ -94,7 +78,7 @@ const Hero = () => {
                       data-aos-delay="300"
                       className='mt-4'
                     >
-                      <Button text="Shop By Category" bgColor="bg-primary" textColor="text-white" />
+                      <Button text="Mua ngay" bgColor="bg-primary" textColor="text-white" />
                     </div>
                   </div>
 
@@ -108,8 +92,9 @@ const Hero = () => {
                       <img
                         src={data.img}
                         alt={data.subtitle}
-                        className='w-[300px] sm:w-[400px] lg:w-[450px] object-contain drop-shadow-2xl'
-                      />
+                        className='w-[600px] sm:w-[500px] lg:w-[600px] object-contain drop-shadow-2xl'
+                        style={{ transform: "rotate(-20deg) scaleX(-1)" }}
+                     />
                     </div>
                   </div>
                 </div>
