@@ -8,6 +8,8 @@ const moment = require("moment");
 const path = require('path'); 
 const http = require('http');
 const { Server } = require('socket.io');
+const cors = require('cors');
+
 
 require("dotenv").config();
 
@@ -17,9 +19,11 @@ db.connect();
 const route = require("./routers/client/index.route");
 const routeAdmin = require("./routers/admin/index.route");
 
-const app = express()
+const app = express();
 const port = process.env.PORT;
   
+app.use(cors());
+
 app.use(methodOverride("_method"));
 
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
@@ -31,7 +35,7 @@ app.set("view engine", "pug");
 const server = http.createServer(app);
 const io = new Server(server);
 global._io = io;
-
+    
 // App Locals Variables
 const systemConfig = require("./config/system")
 app.locals.prefixAdmin = systemConfig.prefixAdmin;

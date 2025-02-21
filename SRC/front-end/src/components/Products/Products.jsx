@@ -1,80 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Heading from '../Shared/Heading';
 import ProductCard from './ProductCard';
 
-import Image1 from '../../assets/hero/air-jordan-1-low-paris-removebg-preview.png';
-
-const ProductsData = [
-  {
-    id: 1,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },
-  {
-    id: 2,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },
-  {
-    id: 3,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },
-  {
-    id: 4,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },
-  {
-    id: 5,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },  {
-    id: 6,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  },
-  {
-    id: 7,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  }, 
-  {
-    id: 8,
-    img: Image1,
-    title: "Nike Air 1",
-    price: "120",
-    aosDelay: "0",
-  }
-];
-
-
 function Products() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/')
+      .then(response => {
+        setProducts(response.data.products);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <div className="container">
         {/* Header section */}
-        <Heading title="Our Products" subtitle={"Explore Our Products"}/>
+        <Heading title="Featured Products" subtitle={"Check Out Our Top Products"} />
 
-        {/* Body section */}
-        <ProductCard data={ProductsData}/>
+        {/* Hiển thị các sản phẩm */}
+        <ProductCard data={products} />
       </div>
     </div>
-  )
+  );
 }
 
 export default Products;

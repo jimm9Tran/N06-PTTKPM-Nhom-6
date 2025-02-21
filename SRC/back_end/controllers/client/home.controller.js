@@ -1,37 +1,20 @@
 const Product = require("../../models/product.model");
-const ProductCategory = require("../../models/product-category.model");
-const productCategoryHelper = require("../../helpers/product-category");
 
-// [GET] /
+// [GET] /api/products (Lấy 8 sản phẩm có vị trí cao nhất)
 module.exports.index = async (req, res) => {
-    //Lấy sản phẩm nổi bật
-    const productsFeatured = await Product.find({
-        featured: "1",
-        deleted: false,
-        status: "active"
-    }).limit(8);
-    // End Lấy sản phẩm nổi bật
+    try {
+        // Lấy 8 sản phẩm có vị trí cao nhất (sắp xếp theo position giảm dần)
+        const products = await Product.find({
+            deleted: false,
+            status: "active"
+        })
+        .sort({ position: "desc" })  // Sắp xếp sản phẩm theo vị trí giảm dần
+        .limit(8);  // Lấy tối đa 8 sản phẩm
 
-    // Hiển thị danh sách sản phẩm mới nhất
-    const productsNew = await Product.find({
-        deleted: false,
-        status: "active"
-    }).sort({position: "desc"}).limit(8);
-    // End Hiển thị danh sách sản phẩm mới nhất
-
-    // Hiển thị sản phẩm Adidas
-    const adidasCategory = "670255c9993b091bc9f23192";
-    
-    const products = await Product.find({
-        product_category_id: adidasCategory,
-        deleted: false,
-        status: "active"
-    }).sort({ position: "desc" }).limit(12); 
-    
-    res.render("client/pages/home/index", {
-        pageTitle: "Trang chủ",
-        productsFeatured: productsFeatured,
-        productsNew: productsNew,
-        products: products
-    });
+        // Trả dữ liệu sản phẩm dưới dạng JSON
+        res.json({ products });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({ message: "Lỗi hệ thống! Không thể tải sản phẩm." });
+    }
 };

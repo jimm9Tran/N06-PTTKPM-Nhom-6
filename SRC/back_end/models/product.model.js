@@ -24,6 +24,10 @@ const productSchema = new mongoose.Schema({
     dimensions: Object,
     warrantyInformation: String,
     shippingInformation: String,
+    aosDelay: {
+        type: String,
+        default: "0",
+    },
     availabilityStatus: String,
     sizes: [
         {

@@ -220,28 +220,49 @@ module.exports.create = async (req, res) => {
 
 // [POST] //admin/products/create
 module.exports.createPost = async (req, res) => {
-    
-
+    // console.log('req.body:', req.body);
+  
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
-
-    if (req.body.position == "") {
-        const countProducts = await Products.countDocuments();
-        req.body.position = countProducts + 1;
-    }else {
-        req.body.position = parseInt(req.body.position);
+  
+    if (req.body.position === "") {
+      const countProducts = await Products.countDocuments();
+      req.body.position = countProducts + 1;
+    } else {
+      req.body.position = parseInt(req.body.position);
     }
-
+  
     req.body.createdBy = {
-        account_id: res.locals.user.id
+      account_id: res.locals.user.id
+    };
+  
+    let sizesArr = [];
+    if (req.body['sizes[][size]'] && req.body['sizes[][quantity]']) {
+      let sizesValues = req.body['sizes[][size]'];
+      let quantitiesValues = req.body['sizes[][quantity]'];
+  
+      if (!Array.isArray(sizesValues)) sizesValues = [sizesValues];
+      if (!Array.isArray(quantitiesValues)) quantitiesValues = [quantitiesValues];
+  
+      for (let i = 0; i < sizesValues.length; i++) {
+        let sizeVal = sizesValues[i] ? sizesValues[i].trim() : "";
+        let quantityVal = parseInt(quantitiesValues[i]) || 0;
+        if (sizeVal !== "" || quantityVal > 0) {
+          sizesArr.push({ size: sizeVal, quantity: quantityVal });
+        }
+      }
     }
 
+    req.body.sizes = sizesArr;
+    delete req.body['sizes[][size]'];
+    delete req.body['sizes[][quantity]'];
+  
     const product = new Products(req.body);
     await product.save();
-
+  
     res.redirect(`${systemConfig.prefixAdmin}/products`);
-};
+  };
 
 
 // [GET] //admin/products/edit/:id

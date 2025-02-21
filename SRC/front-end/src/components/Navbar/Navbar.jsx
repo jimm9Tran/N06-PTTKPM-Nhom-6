@@ -2,17 +2,18 @@ import React from 'react';
 import { FaCaretDown, FaCartShopping } from 'react-icons/fa6';
 import { IoMdSearch } from 'react-icons/io';
 import DarkMode from './DarkMode';
+import { Link } from 'react-router-dom';
 
 const MenuLinks = [
     {
         id: 1,
         name: "Trang chủ",
-        link: "/#",
+        link: "/",
     },
     {
         id: 2,
         name: "Giày",
-        link: "/#products",
+        link: "/products",
     },
     {
         id: 3,
@@ -51,41 +52,41 @@ const Navbar = () => {
             <div className='container flex justify-between items-center'>
                 {/* Logo and Links section */}
                 <div className='flex items-center gap-4'>
-                    <a 
-                        href="#" 
+                    <Link 
+                        to="/" 
                         className='text-primary font-semibold tracking-widest text-2xl uppercase
                         sm:text-3xl'
                     >
                         JM Shoes
-                    </a>
+                    </Link>
                     {/* Menu Items */}
                     <div className='hidden lg:block'>
                         <ul className='flex items-center gap-4'>
                             {
                                 MenuLinks.map((data, index) => (
                                     <li key={index}>
-                                        <a 
-                                            href={data.link} 
+                                        <Link 
+                                            to={data.link} 
                                             className='inline-block px-4 font-semibold 
                                             text-gray-500 hover:text-black 
                                             dark:hover:text-white duration-200'
                                         >   
                                             {" "}
                                             {data.name}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))
                             }
                             
                             {/* Dropdown  */}
                             <li className='relative cursor-pointer group'>
-                                <a href="#" className='flex items-center gap-[2px] font-semibold text-gray-500 dark:hover:text-white py-2'> 
+                                <Link to="#" className='flex items-center gap-[2px] font-semibold text-gray-500 dark:hover:text-white py-2'> 
                                     Tuỳ chọn 
 
                                     <span>
                                         <FaCaretDown className='group-hover:rotate-180 duration-300' />
                                     </span>
-                                </a>
+                                </Link>
 
                                 {/* Dropdown Links */}
                                 <div className='absolute z-[9999] hidden group-hover:block w-[200px] 
@@ -94,13 +95,13 @@ const Navbar = () => {
                                         {
                                             DropdownLinks.map((data, index) => (
                                               <li key={data.index}>
-                                                <a 
+                                                <Link 
                                                     href={data.link} 
 																										className='text-gray-500 inline-block w-full p-2 font-semibold
 																										dark:hover:text-white duration-200 hover:bg-primary/20 rounded-md'
 																									>
 																										{data.name}
-																									</a>
+																									</Link>
                                               </li>  
                                             ))
                                         }
