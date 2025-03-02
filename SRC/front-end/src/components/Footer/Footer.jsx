@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 pt-10 font-sans">
+    <footer className=" dark:bg-gray-900 text-gray-700 dark:text-gray-300 pt-10 font-sans">
       {/* Phần nội dung chính của Footer */}
       <div className="px-4 mt-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -147,12 +147,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Dòng bản quyền */}
-      <div className="bg-gray-200 dark:bg-gray-800 mt-10 py-4">
-        <div className="max-w-7xl mx-auto text-center text-sm text-gray-500 dark:text-gray-400">
-          © {new Date().getFullYear()} Jimm9 Shoes. All rights reserved.
-        </div>
-      </div>
     </footer>
   );
 };

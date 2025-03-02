@@ -1,6 +1,5 @@
 import React from 'react';
-import Button from '../Shared/Button';
-import { CiHeart } from "react-icons/ci";
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ data }) => {
   return (
@@ -23,35 +22,21 @@ const ProductCard = ({ data }) => {
               transition duration-300
               group
             ">
-              <button className="absolute top-3 right-3 text-gray-400 hover:text-red-500 z-10">
-                <CiHeart className="h-5 w-5" />
-              </button>
-
-              <img
-                src={item.thumbnail}
-                alt={item.title}
-                className="object-contain h-auto"
-                style={{ margin: 0 }}
-              />
-
-              <div className="
-                hidden group-hover:flex
-                absolute inset-0
-                text-center
-                backdrop-blur-sm
-                justify-center items-center
-                duration-200
-              ">
-                <Button
-                  text="Thêm vào giỏ hàng"
-                  bgColor="bg-primary"
-                  textColor="text-white"
+              <Link to={`/products/${item.slug}`}>
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  className="object-contain h-auto transition-transform duration-300 transform group-hover:scale-105"
+                  style={{ margin: 0 }}
                 />
-              </div>
+              </Link>
+
             </div>
 
             <h2 className="font-thin mt-2">{item.product_category_id.title}</h2>
-            <h2 className="font-normal">{item.title}</h2>
+            <Link to={`/products/${item.slug}`}>
+              <h2 className="font-normal">{item.title}</h2>
+            </Link>   
             <h2 className="font-bold text-lg mt-2">
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",

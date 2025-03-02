@@ -2,6 +2,7 @@ import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 import HomePage from "../pages/HomePage/HomePage";
 import Orderpage from "../pages/OrderPage/Orderpage";
 import ProductPage from "../pages/ProductsPage/ProductPage";
+import ProductDetailPage from "../pages/ProductDetailPage/ProductDetailPage";
 
 export const routes = [
     {
@@ -13,6 +14,12 @@ export const routes = [
     {
         path: 'products',
         page: ProductPage,
+        isShowHeader: true,
+        isShowFooter: true,
+    },
+    {
+        path: '/products/:slug',
+        page: ProductDetailPage,
         isShowHeader: true,
         isShowFooter: true,
     },

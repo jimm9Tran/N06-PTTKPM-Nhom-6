@@ -19,7 +19,7 @@ function Products() {
       });
   }, []);
 
-  console.log(products);
+  // console.log(products);
 
   if (loading) {
     return <div>Loading...</div>;

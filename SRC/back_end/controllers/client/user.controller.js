@@ -7,210 +7,172 @@ const Cart = require("../../models/cart.model");
 
 // [GET] /user/register
 module.exports.register = async (req, res) => {
-    res.render("client/pages/user/register", {
-        pageTitle: "Đăng kí tài khoản",
-    })
-}
+  res.json({ pageTitle: "Đăng kí tài khoản", message: "Register endpoint" });
+};
 
 // [POST] /user/register
 module.exports.registerPost = async (req, res) => {
-    const existEmail = await User.findOne({
-        email: req.body.email
-    });
-
-    if(existEmail) {
-        req.flash("error", "Email đã tồn tại");
-        res.redirect("back");
-        return;
+  try {
+    const existEmail = await User.findOne({ email: req.body.email });
+    if (existEmail) {
+      return res.status(400).json({ error: "Email đã tồn tại" });
     }
-    
-    req.body.password = md5(req.body.password);
 
+    req.body.password = md5(req.body.password);
     const user = new User(req.body);
     await user.save();
 
-    console.log(user);
-    res.cookie("tokenUser", user.tokenUser);
+    res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
 
-    res.redirect("/");
-}
+    res.status(201).json({ message: "Đăng ký thành công", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // [GET] /user/login
 module.exports.login = async (req, res) => {
-    res.render("client/pages/user/login", {
-        pageTitle: "Đăng nhập tài khoản",
-    });
-}
+  res.json({ pageTitle: "Đăng nhập tài khoản", message: "Login endpoint" });
+};
 
 // [POST] /user/login
 module.exports.loginPost = async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const user = await User.findOne({
-        email: email,
-        deleted: false
-    });
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, deleted: false });
 
     if (!user) {
-        req.flash("erorr", "Email không tồn tại!");
-        res.redirect("back");
-        return;
+      return res.status(400).json({ error: "Email không tồn tại!" });
     }
 
-    if (md5(password) != user.password){
-        req.flash("erorr", "Sai mật khẩu");
-        res.redirect("back");
-        return;
+    if (md5(password) !== user.password) {
+      return res.status(400).json({ error: "Sai mật khẩu" });
     }
 
     if (user.status === "locked") {
-        req.flash("erorr", "Tài khoản đang bị khóa!");
-        res.redirect("back");
-        return;
+      return res.status(400).json({ error: "Tài khoản đang bị khóa!" });
     }
 
-    const cart = await Cart.findOne({
-        user_id: user.id
-    });
-
-    if(cart){
-        res.cookie("cartId", cart.id);
-    }else {
-        await Cart.updateOne({
-            _id: req.cookies.cartId
-        },{
-            user_id: user.id
-        });
+    const cart = await Cart.findOne({ user_id: user.id });
+    if (cart) {
+      res.cookie("cartId", cart.id, { httpOnly: true });
+    } else {
+      await Cart.updateOne({ _id: req.cookies.cartId }, { user_id: user.id });
     }
 
-    res.cookie("tokenUser", user.tokenUser);
-
-    res.redirect("/");
-}
+    res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
+    res.json({ message: "Đăng nhập thành công", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // [GET] /user/logout
 module.exports.logout = async (req, res) => {
-    res.clearCookie("cartId");
-    res.clearCookie("tokenUser");
-    res.redirect("/");
-}
+  res.clearCookie("cartId");
+  res.clearCookie("tokenUser");
+  res.json({ message: "Đăng xuất thành công" });
+};
 
 // [GET] /user/password/forgot
 module.exports.forgotPassword = async (req, res) => {
-    res.render("client/pages/user/forgot-password", {
-        pageTitle: "Lấy lại mật khẩu",
-    })
-}
+  res.json({
+    pageTitle: "Lấy lại mật khẩu",
+    message: "Forgot password endpoint",
+  });
+};
 
 // [POST] /user/password/forgot
 module.exports.forgotPasswordPost = async (req, res) => {
-    const email = req.body.email;   
-    // console.log(email);
+  try {
+    const email = req.body.email;
+    const user = await User.findOne({ email, deleted: false });
 
-    const user = await User.findOne({
-        email: email,
-        deleted: false
-    });
-
-    // console.log(user);
-
-    if(!user) {
-        req.flash("error", "Email không tồn tại!");
-        res.redirect("back");
-        return;
+    if (!user) {
+      return res.status(400).json({ error: "Email không tồn tại!" });
     }
 
-    // Luư thông tin vào database
+    // Tạo OTP (mã xác thực)
     const otp = generateHelper.generateRandomNumber(8);
-
     const objectForgotPassword = {
-        email: email,
-        otp: otp,
-        expriresAt: Date.now()
+      email,
+      otp,
+      expriresAt: Date.now() + 3600000, // OTP hết hạn sau 1 giờ
     };
 
     const forgotPassword = new ForgotPassword(objectForgotPassword);
     await forgotPassword.save();
 
-    // Nếu tồn tài email thì gửi mã OTP qua email
+    // Nếu cần gửi OTP qua email (bỏ comment nếu đã cấu hình sendMail)
+    // await sendMailHelper.sendMail(email, otp);
 
-    res.redirect(`/user/password/otp?email=${email}`);
-
-}
+    res.json({
+      message: "OTP đã được gửi tới email của bạn",
+      email,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // [GET] /user/password/otp
 module.exports.otpPassword = async (req, res) => {
-    const email = req.query.email;
-
-    res.render("client/pages/user/otp-password", {
-        pageTitle: "Nhập mã OTP",
-        email: email,
-    });
-}
-
+  const email = req.query.email;
+  res.json({ pageTitle: "Nhập mã OTP", email });
+};
 
 // [POST] /user/password/otp
 module.exports.otpPasswordPost = async (req, res) => {
-    const email = req.body.email;   
-    const otp = req.body.otp;
-    // console.log(email);
+  try {
+    const { email, otp } = req.body;
+    const result = await ForgotPassword.findOne({ email, otp });
 
-    const result = await ForgotPassword.findOne({
-        email: email,
-        otp: otp
-    });
-
-    // console.log(result);
-
-    if(!result) {
-        req.flash("erorr", "OTP không hợp lệ!");
-        res.redirect("back");
-        return;
+    if (!result) {
+      return res.status(400).json({ error: "OTP không hợp lệ!" });
     }
 
-    const user = await User.findOne({
-        email: email,
-    });
+    const user = await User.findOne({ email });
+    res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
 
-    res.cookie("tokenUser", user.tokenUser);
-
-    res.redirect("/user/password/reset");
-}
+    res.json({ message: "OTP hợp lệ", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // [GET] /user/password/reset
 module.exports.resetPassword = async (req, res) => {
-    res.render("client/pages/user/reset-password", {
-        pageTitle: "Đổi mật khẩu",
-    });
-}
+  res.json({
+    pageTitle: "Đổi mật khẩu",
+    message: "Reset password endpoint",
+  });
+};
 
 // [POST] /user/password/reset
 module.exports.resetPasswordPost = async (req, res) => {
-    const password = req.body.password;
-    // const confirmPassword = req.body.confirmPassword;
-
-    const tokenUser = req.cookie.tokenUser;
-
-    await User.updateOne({
-        tokenUser: tokenUser,
-    }, {
-        password: md5(password)
-    })
-
-    res.redirect("/");
-}
+  try {
+    const { password } = req.body;
+    const tokenUser = req.cookies.tokenUser;
+    await User.updateOne({ tokenUser }, { password: md5(password) });
+    res.json({ message: "Mật khẩu đã được thay đổi" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // [GET] /user/info
 module.exports.info = async (req, res) => {
+  try {
     const tokenUser = req.cookies.tokenUser;
-
-    const infoUser = await User.findOne({
-        tokenUser: tokenUser,
-    }).select("-password");
-
-    res.render("client/pages/user/info", {
-        pageTitle: "Thông tin tài khoản",
-        infoUser: infoUser
-    })
-}
+    const infoUser = await User.findOne({ tokenUser }).select("-password");
+    res.json({ infoUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};

@@ -20,13 +20,14 @@ html(lang="en")
     )
     link(rel="stylesheet", href="/admin/css/style.css")
     link(rel="stylesheet", href="/css/detail.css")
+    link(rel="stylesheet" href="/css/admin.css")
 
   body
     if(role.permissions.length > 0)
       include ../partials/header.pug
 
       .d-flex
-        include ../partials/sider.pug
+        include ../partials/sidebar.pug
 
         main.main-content.flex-grow-1
           .container-fluid.py-4

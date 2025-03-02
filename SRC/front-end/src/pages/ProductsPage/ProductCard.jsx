@@ -1,52 +1,45 @@
+// src/components/ProductCard.jsx
 import React from 'react';
-import { FaHeart, FaStar } from 'react-icons/fa';
-import Button from '../../components/Shared/Button';
+import { Link } from 'react-router-dom';
 
-const ProductCard = ({ product, onClick }) => {
+const ProductCard = ({ product }) => {
   return (
     <div
-      className="group bg-white border rounded-lg overflow-hidden shadow-md hover:shadow-lg cursor-pointer"
-      onClick={onClick}
+      className="mb-10 section_product"
+      data-aos="fade-up"
+      data-aos-delay={product.aosDelay}
     >
-      {/* Product Image */}
-      <div className="relative overflow-hidden">
-        <img
-          src={product.thumbnail}
-          alt={product.title}
-          className="w-full h-[200px] object-cover transition-transform transform group-hover:scale-110 duration-300"
-        />
-        <div className="absolute top-2 right-2">
-          <button className="text-gray-500 hover:text-primary">
-            <FaHeart />
-          </button>
-        </div>
+      <div
+        className="box-image h-[300px] p-5 flex justify-center items-center border border-[#f0eeee] rounded-[12px] relative overflow-hidden transition duration-300 group"
+      >
+        <Link to={`/products/${product.slug}`}>
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+            className="object-contain h-auto transition-transform duration-300 transform group-hover:scale-105"
+            style={{ margin: 0 }}
+          />
+        </Link>
       </div>
 
-      {/* Product Info */}
-      <div className="p-4">
-        <p className="text-sm text-gray-500">{product.category}</p>
-        <h3 className="text-lg font-semibold text-gray-900 mt-1">{product.title}</h3>
+      {product.product_category_id && (
+        <h2 className="font-thin mt-2">
+          {product.product_category_id.title}
+        </h2>
+      )}
 
-        {/* Rating */}
-        <div className="flex items-center mt-1 text-yellow-400">
-          {[...Array(5)].map((_, index) => (
-            <FaStar
-              key={index}
-              className={`${
-                index < product.rating ? 'text-yellow-400' : 'text-gray-300'
-              }`}
-            />
-          ))}
-        </div>
+      <Link to={`/products/${product.slug}`}>
+        <h2 className="font-normal cursor-pointer hover:underline">
+          {product.title}
+        </h2>
+      </Link>
 
-        {/* Price */}
-        <p className="text-xl font-bold text-gray-900 mt-2">{product.price} ₫</p>
-      </div>
-      
-      {/* Add to Cart Button */}
-      <div className="p-4 pt-0">
-        <Button text="Add to Cart" bgColor="bg-primary" textColor="text-white" />
-      </div>
+      <h2 className="font-bold text-lg mt-2">
+        {new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(product.price)}
+      </h2>
     </div>
   );
 };
