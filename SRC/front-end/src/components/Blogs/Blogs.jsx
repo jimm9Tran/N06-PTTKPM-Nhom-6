@@ -5,19 +5,19 @@ import Image1 from '../../assets/blogs/Ban-sao-6603b745ee58e573dace868cd0efb9837
 
 const BlogData = [
     {
-        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt",
+        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt 1",
         subtitle: 'Sự kết hợp bất ngờ giữa siêu anh hùng và thể thao',
         published: "2025",
         image: Image1,
     }, 
     {
-        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt",
+        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt 2",
         subtitle: 'Sự kết hợp bất ngờ giữa siêu anh hùng và thể thao',
         published: "2025",
         image: Image1,
     },
     {
-        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt",
+        title: "Sẵn sàng bùng nổ: Bộ sưu tập adidas x Deadpool & Wolverine chính thức ra mắt 3",
         subtitle: 'Sự kết hợp bất ngờ giữa siêu anh hùng và thể thao',
         published: "2025",
         image: Image1,

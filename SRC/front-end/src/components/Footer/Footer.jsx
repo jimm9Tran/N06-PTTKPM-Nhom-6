@@ -92,7 +92,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Logo các hình thức thanh toán */}
           <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
-            <img
+            {/* <img
               src="https://via.placeholder.com/60x30.png?text=VISA"
               alt="visa"
               className="h-6 object-contain"
@@ -111,7 +111,7 @@ const Footer = () => {
               src="https://via.placeholder.com/60x30.png?text=PAYPAL"
               alt="paypal"
               className="h-6 object-contain"
-            />
+            /> */}
           </div>
 
           {/* Icon mạng xã hội */}

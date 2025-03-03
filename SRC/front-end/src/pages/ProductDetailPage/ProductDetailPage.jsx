@@ -1,11 +1,11 @@
-// src/pages/ProductDetailPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ProductDetail from '../../components/Products/ProductDetail';
 import { getProductDetail } from '../../services/productService';
+import ProductDetail from '../../components/Products/ProductDetail';
 
 const ProductDetailPage = () => {
-  const { slug } = useParams();
+  // Lấy tham số slugProduct từ URL
+  const { slugProduct } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const ProductDetailPage = () => {
   useEffect(() => {
     async function fetchDetail() {
       try {
-        const response = await getProductDetail(slug);
+        const response = await getProductDetail(slugProduct);
         setProduct(response.data.product);
       } catch (err) {
         console.error("Error fetching product detail:", err);
@@ -23,24 +23,13 @@ const ProductDetailPage = () => {
       }
     }
     fetchDetail();
-  }, [slug]);
+  }, [slugProduct]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  
-  if (error || !product) {
-    return <div>Product not found</div>;
-  }
+  if (loading) return <div className="container mx-auto p-4">Loading...</div>;
+  if (error) return <div className="container mx-auto p-4">Error loading product details</div>;
+  if (!product) return <div className="container mx-auto p-4">Product not found</div>;
 
-  const handleAddToCart = (product) => {
-    // Thực hiện logic thêm sản phẩm vào giỏ hàng
-    console.log("Adding product to cart:", product);
-  };
-
-  return (
-    <ProductDetail product={product} onAddToCart={handleAddToCart} />
-  );
+  return <ProductDetail product={product} />;
 };
 
 export default ProductDetailPage;

@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
       <div
         className="box-image h-[300px] p-5 flex justify-center items-center border border-[#f0eeee] rounded-[12px] relative overflow-hidden transition duration-300 group"
       >
-        <Link to={`/products/${product.slug}`}>
+        <Link to={`/products/detail/${product.slug}`}>
           <img
             src={product.thumbnail}
             alt={product.title}
@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
         </h2>
       )}
 
-      <Link to={`/products/${product.slug}`}>
+      <Link to={`/products/detail/${product.slug}`}>
         <h2 className="font-normal cursor-pointer hover:underline">
           {product.title}
         </h2>
