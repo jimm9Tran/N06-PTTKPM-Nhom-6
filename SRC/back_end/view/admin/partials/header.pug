@@ -1,15 +1,19 @@
-//- header.pug
-header.admin-header.navbar.navbar-light.bg-light
+header.admin-header.navbar.navbar-expand-lg.navbar-light.bg-light.shadow-sm
   .container-fluid
-    .navbar-brand
-      img(src="/images/avatar.png" alt="Admin Logo" class="logo-img me-2")
-      | Admin Panel
-    ul.nav
-      li.nav-item
-        a.nav-link(href=`${prefixAdmin}/my-account`)
-          i.fas.fa-user-circle.me-2
-          | #{user.fullName}
-      li.nav-item
-        a.nav-link.text-danger(href=`${prefixAdmin}/auth/logout`)
-          i.fas.fa-sign-out-alt.me-2
-          | Đăng xuất
+    button.btn.btn-outline-secondary.d-lg-none(type="button", data-bs-toggle="offcanvas", data-bs-target="#offcanvasSidebar", aria-controls="offcanvasSidebar")
+      i.fas.fa-bars
+    a.navbar-brand.ms-2(href=`${prefixAdmin}/dashboard`)
+      img(src="/images/avatar.png", alt="Admin Logo", class="logo-img me-2", style="height: 40px;")
+      | Administrator
+    button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#adminNavbar", aria-controls="adminNavbar", aria-expanded="false", aria-label="Toggle navigation")
+      span.navbar-toggler-icon
+    .collapse.navbar-collapse#adminNavbar
+      ul.nav.ms-auto
+        li.nav-item
+          a.nav-link(href=`${prefixAdmin}/my-account`)
+            i.fas.fa-user-circle.me-2
+            | #{user.fullName}
+        li.nav-item
+          a.nav-link.text-danger(href=`${prefixAdmin}/auth/logout`)
+            i.fas.fa-sign-out-alt.me-2
+            | Đăng xuất

@@ -1,0 +1,64 @@
+//- partials/sidebar-offcanvas.pug
+div.offcanvas.offcanvas-start#offcanvasSidebar(
+  tabindex="-1", 
+  aria-labelledby="offcanvasSidebarLabel",
+  style="width: 240px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
+)
+  div.offcanvas-header.bg-light
+    h5.offcanvas-title#offcanvasSidebarLabel.text-secondary Menu
+    button.btn-close(type="button", data-bs-dismiss="offcanvas", aria-label="Close")
+
+  div.offcanvas-body.d-flex.flex-column.p-0
+    nav.nav.flex-column.flex-grow-1
+      li.nav-item.border-bottom
+        a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+          href=`${prefixAdmin}/dashboard`,
+          class=activePage === 'dashboard' ? 'active' : ''
+        )
+          i.fas.fa-tachometer-alt.me-2
+          | Tổng quan
+
+      if(role.permissions.includes("products-category_view"))
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+            href=`${prefixAdmin}/product-category`,
+            class=activePage === 'product-category' ? 'active' : ''
+          )
+            i.fas.fa-list-alt.me-2
+            | Danh mục sản phẩm
+
+      if(role.permissions.includes("products_view"))
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+            href=`${prefixAdmin}/products`,
+            class=activePage === 'products' ? 'active' : ''
+          )
+            i.fas.fa-box-open.me-2
+            | Danh sách sản phẩm
+
+      if(role.permissions.includes("roles_view"))
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+            href=`${prefixAdmin}/roles`,
+            class=activePage === 'roles' ? 'active' : ''
+          )
+            i.fas.fa-user-shield.me-2
+            | Nhóm quyền
+
+      if(role.permissions.includes("roles_permissions"))
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+            href=`${prefixAdmin}/roles/permissions`,
+            class=activePage === 'roles-permissions' ? 'active' : ''
+          )
+            i.fas.fa-lock.me-2
+            | Phân quyền
+
+      if(role.permissions.includes("accounts_view"))
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-2.px-3.text-dark(
+            href=`${prefixAdmin}/accounts`,
+            class=activePage === 'accounts' ? 'active' : ''
+          )
+            i.fas.fa-users.me-2
+            | Danh sách tài khoản

@@ -1,51 +1,41 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { FaCaretDown, FaCartShopping } from 'react-icons/fa6';
 import { IoMdSearch } from 'react-icons/io';
 import DarkMode from './DarkMode';
-import { Link } from 'react-router-dom';
+import UserMenu from '../UserMenu/UserMenu';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 const MenuLinks = [
-  {
-    id: 1,
-    name: "Trang chủ",
-    link: "/",
-  },
-  {
-    id: 2,
-    name: "Giày",
-    link: "/products",
-  },
-  {
-    id: 3,
-    name: "Giới thiệu",
-    link: "/#about",
-  },
-  {
-    id: 4,
-    name: "Tin tức - Sự kiện",
-    link: "/#blog",
-  },
+  { id: 1, name: "Trang chủ", link: "/" },
+  { id: 2, name: "Giày", link: "/products" },
+  { id: 3, name: "Giới thiệu", link: "/#about" },
+  { id: 4, name: "Tin tức - Sự kiện", link: "/#blog" },
 ];
 
 const DropdownLinks = [
-  {
-    id: 1,
-    name: "Sản phẩm nổi bật",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Sản phẩm bán chạy",
-    link: "/#",
-  },
-  {
-    id: 3,
-    name: "Top Rated",
-    link: "/#",
-  },
+  { id: 1, name: "Sản phẩm nổi bật", link: "/#" },
+  { id: 2, name: "Sản phẩm bán chạy", link: "/#" },
+  { id: 3, name: "Top Rated", link: "/#" },
 ];
 
 const Navbar = () => {
+  const { user, setUser } = useContext(AuthContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Thực hiện hành động đăng xuất (gọi API nếu cần)
+    setUser(null);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?keyword=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
       <div className="py-4">
@@ -108,30 +98,33 @@ const Navbar = () => {
           <div className="flex justify-between items-center gap-4">
             {/* Search Bar section */}
             <div className="relative group hidden sm:block">
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                className="search-bar"
-              />
-              <IoMdSearch
-                className="text-xl text-gray-600 dark:text-gray-400 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3 duration-200"
-              />
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  className="search-bar"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-3 duration-200">
+                  <IoMdSearch className="text-xl text-gray-600 dark:text-gray-400 group-hover:text-primary" />
+                </button>
+              </form>
             </div>
 
             {/* Order-button section */}
             <button className="relative p-3">
               <FaCartShopping className="text-xl text-gray-600 dark:text-gray-400" />
-              <div
-                className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs"
-              >
+              <div className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs">
                 4
               </div>
             </button>
 
             {/* Dark Mode section */}
-            <div>
-              <DarkMode />
-            </div>
+            <DarkMode />
+
+            {/* User Menu section */}
+            <UserMenu user={user} onLogout={handleLogout} />
           </div>
         </div>
       </div>

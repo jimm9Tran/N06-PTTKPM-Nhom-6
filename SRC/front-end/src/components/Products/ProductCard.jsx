@@ -22,7 +22,7 @@ const ProductCard = ({ data }) => {
               transition duration-300
               group
             ">
-              <Link to={`/products/${item.slug}`}>
+              <Link to={`/products/detail/${item.slug}`}>
                 <img
                   src={item.thumbnail}
                   alt={item.title}
@@ -34,7 +34,7 @@ const ProductCard = ({ data }) => {
             </div>
 
             <h2 className="font-thin mt-2">{item.product_category_id.title}</h2>
-            <Link to={`/products/${item.slug}`}>
+            <Link to={`/products/detail/${item.slug}`}>
               <h2 className="font-normal">{item.title}</h2>
             </Link>   
             <h2 className="font-bold text-lg mt-2">

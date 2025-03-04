@@ -22,7 +22,12 @@ const routeAdmin = require("./routers/admin/index.route");
 const app = express();
 const port = process.env.PORT;
   
-app.use(cors());
+app.use(cors(
+    {
+        origin: "http://localhost:5173",
+        credentials: true,
+    }
+));
 
 app.use(methodOverride("_method"));
 
@@ -43,6 +48,7 @@ app.locals.moment = moment;
 
 // parser application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 // Flash
 app.use(cookieParser("jfisdaf"));

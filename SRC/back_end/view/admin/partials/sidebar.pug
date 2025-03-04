@@ -1,38 +1,41 @@
-//- sidebar.pug
-aside.sider
-  .inner-menu
-    ul.nav.flex-column
-      li.nav-item
-        a.nav-link(href=`${prefixAdmin}/dashboard`)
-          i.fas.fa-tachometer-alt.me-2
-          |  Tổng quan
+//- partials/sidebar.pug
+aside.sidebar.bg-light.border-end(
+  style="min-width: 200px; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
+)
+  .d-flex.flex-column.h-100
+    nav.nav.flex-column
+      li.nav-item.border-bottom
+        a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/dashboard`)
+          i.fas.fa-tachometer-alt.me-3
+          span Tổng quan
 
       if(role.permissions.includes("products-category_view"))
-        li.nav-item
-          a.nav-link(href=`${prefixAdmin}/product-category`)
-            i.fas.fa-list-alt.me-2
-            |  Danh mục sản phẩm
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/product-category`)
+            i.fas.fa-list-alt.me-3
+            span Danh mục sản phẩm
 
       if(role.permissions.includes("products_view"))
-        li.nav-item
-          a.nav-link(href=`${prefixAdmin}/products`)
-            i.fas.fa-box-open.me-2
-            |  Danh sách sản phẩm
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/products`)
+            i.fas.fa-box-open.me-3
+            span Danh sách sản phẩm
 
       if(role.permissions.includes("roles_view"))
-        li.nav-item
-          a.nav-link(href=`${prefixAdmin}/roles`)
-            i.fas.fa-user-shield.me-2
-            |  Nhóm quyền
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/roles`)
+            i.fas.fa-user-shield.me-3
+            span Nhóm quyền
 
       if(role.permissions.includes("roles_permissions"))
-        li.nav-item
-          a.nav-link(href=`${prefixAdmin}/roles/permissions`)
-            i.fas.fa-lock.me-2
-            |  Phân quyền
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/roles/permissions`)
+            i.fas.fa-lock.me-3
+            span Phân quyền
 
       if(role.permissions.includes("accounts_view"))
-        li.nav-item
-          a.nav-link(href=`${prefixAdmin}/accounts`)
-            i.fas.fa-users.me-2
-            |  Danh sách tài khoản
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/accounts`)
+            i.fas.fa-users.me-3
+            span Danh sách tài khoản
+
