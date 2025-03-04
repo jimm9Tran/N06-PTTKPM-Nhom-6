@@ -125,7 +125,7 @@ module.exports.changeStatus = async (req, res) => {
 // [PATCH] //admin/products/change-multi
 module.exports.changeMulti = async (req, res) => {
     const type = req.body.type;
-    const ids = req.body.ids.split(", ");
+    const ids = req.body.ids.split(", ").map(item => item.trim());
     
     const updatedBy = {
         account_id: res.locals.user.id,
@@ -148,7 +148,6 @@ module.exports.changeMulti = async (req, res) => {
                 {_id: { $in: ids }}, 
                 {   
                     deleted: true, 
-                    // deleteAt: new Date()
                     deletedBy: {
                         account_id: res.locals.user.id,
                         deletedAt: new Date(),
@@ -162,19 +161,19 @@ module.exports.changeMulti = async (req, res) => {
             for (const item of ids){
                 let [id, position] = item.split("-");
                 position = parseInt(position);
-                console.log(id);
-                console.log(position);
-
-                await Products.updateOne({ _id: id },
-                    {   position: position,
-                        $push: {updatedBy: updatedBy}
-                    }
-                );
-            req.flash('success', 'Sản phẩm đã được cập nhật thành công.');
+                if(id && !isNaN(position)){
+                    await Products.updateOne({ _id: id },
+                        {   position: position,
+                            $push: {updatedBy: updatedBy}
+                        }
+                    );
+                }
             }
+            req.flash('success', 'Sản phẩm đã được cập nhật thành công.');
             break;
 
         default:
+            req.flash('error', 'Loại thao tác không hợp lệ.');
             break;
     }
 

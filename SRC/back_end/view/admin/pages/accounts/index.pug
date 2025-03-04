@@ -9,8 +9,7 @@ block main
             .card-header Danh sách
             .card-body
                 .row
-                    .col-8
-                    .col-4.text-right
+                    .col-12.d-flex.justify-content-end 
                         if(role.permissions.includes("accounts_edit"))
                             a(
                                 href=`${prefixAdmin}/accounts/create`

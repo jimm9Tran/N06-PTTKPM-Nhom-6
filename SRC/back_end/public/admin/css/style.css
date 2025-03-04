@@ -1,0 +1,56 @@
+/* Container alert */
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 320px;
+    padding: 15px 45px 15px 20px; /* padding bên phải đủ để không bị chồng nội dung */
+    background-color: #fff;
+    border-left: 6px solid;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    z-index: 1050;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Các kiểu alert */
+  .alert-success {
+    border-color: #28a745;
+    background-color: #e9f8ee;
+  }
+  
+  .alert-danger {
+    border-color: #dc3545;
+    background-color: #fdeaea;
+  }
+  
+  /* Nút đóng thông báo */
+  .alert .alert-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  /* Hover cho nút đóng */
+  .alert .alert-close:hover {
+    color: #000;
+  }
+  
+  /* Khi ẩn alert */
+  .alert-hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+  }

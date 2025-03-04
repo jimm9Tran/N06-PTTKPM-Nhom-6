@@ -100,3 +100,15 @@ module.exports.permissionsPatch = async (req, res) => {
     }
     res.redirect("back");
 };
+
+// [GET] /admin/roles/delete/:id
+module.exports.delete = async (req, res) => {
+    try {
+      const id = req.params.id;
+      await Role.updateOne({ _id: id }, { deleted: true });
+      req.flash("success", "Xóa nhóm quyền thành công");
+    } catch (error) {
+      req.flash("error", "Xóa nhóm quyền thất bại");
+    }
+    res.redirect("back");
+  };
