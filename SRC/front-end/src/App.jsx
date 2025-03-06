@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes/index";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import { ToastContainer } from "react-toastify";
+import { CartProvider } from "./context/CartContext";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -21,26 +22,28 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <ToastContainer />
-        <Routes>
-          {routes.map((route) => {
-            const Page = route.page;
-            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <Layout>
-                    <Page />
-                  </Layout>
-                }
-              />
-            );
-          })}
-        </Routes>
-      </Router>
+      <CartProvider>
+        <Router>
+          <ToastContainer position="top-right" autoClose={3000} />
+          <Routes>
+            {routes.map((route) => {
+              const Page = route.page;
+              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+              return (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  }
+                />
+              );
+            })}
+          </Routes>
+        </Router>
+      </CartProvider>
     </div>
   );
 }

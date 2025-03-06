@@ -6,10 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const moment = require("moment");
 const path = require('path'); 
-const http = require('http');
-const { Server } = require('socket.io');
 const cors = require('cors');
-
 
 require("dotenv").config();
 
@@ -22,12 +19,10 @@ const routeAdmin = require("./routers/admin/index.route");
 const app = express();
 const port = process.env.PORT;
   
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true,
-    }
-));
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 app.use(methodOverride("_method"));
 
@@ -36,23 +31,23 @@ app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce
 app.set("views", "./view");
 app.set("view engine", "pug");
 
-// SocketIO
-const server = http.createServer(app);
-const io = new Server(server);
-global._io = io;
-    
 // App Locals Variables
-const systemConfig = require("./config/system")
+const systemConfig = require("./config/system");
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
 app.locals.moment = moment;
 
-// parser application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+// Parser application/x-www-form-urlencoded và JSON
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Flash
+// Flash, cookie-parser và session 
 app.use(cookieParser("jfisdaf"));
-app.use(session({cookie: {maxAge: 60000}}));
+app.use(session({
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60000 }
+}));
 app.use(flash());
 
 app.use(express.static("public"));
@@ -60,12 +55,13 @@ app.use(express.static("public"));
 // Routes
 route(app);
 routeAdmin(app);
+
 app.get("*", (req, res) => {
     res.render("client/pages/errors/404", {
         pageTitle: "404 Not Found"
     });
 });
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`App listening on port ${port}`);
-}); 
+});

@@ -1,49 +1,45 @@
+// src/controllers/client/user.controller.js
+
 const User = require("../../models/user.model");
+const Cart = require("../../models/cart.model");
 const md5 = require("md5");
 const generateHelper = require("../../helpers/generate");
 const ForgotPassword = require("../../models/forgot-password.model");
-const sendMailHelper = require("../../helpers/sendMail");
-const Cart = require("../../models/cart.model");
 
-// [GET] /user/register
+// [GET] /user/register - Trả về thông tin trang đăng ký (dành cho React)
 module.exports.register = async (req, res) => {
-  res.status(200).json({ 
-    pageTitle: "Đăng kí tài khoản", 
-    message: "Register endpoint" 
-  });
+  // Trong ứng dụng React, bạn có thể trả về JSON thay vì render giao diện
+  return res.json({ pageTitle: "Đăng ký tài khoản", message: "Register endpoint" });
 };
 
-// [POST] /user/register
+// [POST] /user/register - Xử lý đăng ký tài khoản
 module.exports.registerPost = async (req, res) => {
   try {
-    const { email, password, fullName, ...rest } = req.body;
-    const existEmail = await User.findOne({ email });
-    if (existEmail) {
+    // Kiểm tra email đã tồn tại chưa
+    const existUser = await User.findOne({ email: req.body.email });
+    if (existUser) {
       return res.status(400).json({ error: "Email đã tồn tại" });
     }
-
-    const hashedPassword = md5(password);
-    const user = new User({ email, password: hashedPassword, fullName, ...rest });
+    // Mã hóa mật khẩu
+    req.body.password = md5(req.body.password);
+    const user = new User(req.body);
     await user.save();
-
-    // Lưu token vào cookie với httpOnly
+    console.log("User đã đăng ký:", user);
+    // Lưu token vào cookie (để client lưu ý cookie httpOnly không thể truy cập từ JS)
     res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
-    res.status(201).json({ message: "Đăng ký thành công", user });
+    return res.status(201).json({ message: "Đăng ký thành công", user });
   } catch (error) {
     console.error("Register error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-// [GET] /user/login
+// [GET] /user/login - Trả về thông tin trang đăng nhập (dành cho React)
 module.exports.login = async (req, res) => {
-  res.status(200).json({ 
-    pageTitle: "Đăng nhập tài khoản", 
-    message: "Login endpoint" 
-  });
+  return res.json({ pageTitle: "Đăng nhập tài khoản", message: "Login endpoint" });
 };
 
-// [POST] /user/login
+// [POST] /user/login - Xử lý đăng nhập
 module.exports.loginPost = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -51,83 +47,74 @@ module.exports.loginPost = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "Email không tồn tại!" });
     }
-
     if (md5(password) !== user.password) {
       return res.status(400).json({ error: "Sai mật khẩu" });
     }
-
     if (user.status === "locked") {
       return res.status(400).json({ error: "Tài khoản đang bị khóa!" });
     }
-
-    // Xử lý giỏ hàng: nếu user có giỏ hàng, lưu cookie; nếu chưa có, cập nhật giỏ hàng hiện có (nếu có)
-    const cart = await Cart.findOne({ user_id: user.id });
-    if (cart) {
-      res.cookie("cartId", cart.id, { httpOnly: true });
-    } else if (req.cookies.cartId) {
-      await Cart.updateOne({ _id: req.cookies.cartId }, { user_id: user.id });
-    }
-
+    // Lưu token vào cookie (httpOnly để tăng bảo mật)
     res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
-    res.status(200).json({ message: "Đăng nhập thành công", user });
+
+    // Nếu có cookie giỏ hàng nhưng chưa có user_id, cập nhật giỏ hàng với user_id
+    const cartId = req.cookies.cartId;
+    if (cartId) {
+      const cart = await Cart.findOne({ _id: cartId });
+      if (cart && !cart.user_id) {
+        cart.user_id = user._id.toString();
+        await cart.save();
+      }
+    }
+    return res.json({ message: "Đăng nhập thành công", user });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-// [GET] /user/logout
+// [GET] /user/logout - Xử lý đăng xuất
 module.exports.logout = async (req, res) => {
-  res.clearCookie("cartId");
   res.clearCookie("tokenUser");
-  res.status(200).json({ message: "Đăng xuất thành công" });
+  return res.json({ message: "Đăng xuất thành công" });
 };
 
-// [GET] /user/password/forgot
+// [GET] /user/password/forgot - Trả về trang lấy lại mật khẩu
 module.exports.forgotPassword = async (req, res) => {
-  res.status(200).json({
-    pageTitle: "Lấy lại mật khẩu",
-    message: "Forgot password endpoint",
-  });
+  return res.json({ pageTitle: "Lấy lại mật khẩu", message: "Forgot password endpoint" });
 };
 
-// [POST] /user/password/forgot
+// [POST] /user/password/forgot - Xử lý quên mật khẩu (gửi OTP)
 module.exports.forgotPasswordPost = async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email;
     const user = await User.findOne({ email, deleted: false });
     if (!user) {
       return res.status(400).json({ error: "Email không tồn tại!" });
     }
-
     // Tạo OTP (mã xác thực)
     const otp = generateHelper.generateRandomNumber(8);
-    const forgotData = {
+    const objectForgotPassword = {
       email,
       otp,
       expriresAt: Date.now() + 3600000, // OTP hết hạn sau 1 giờ
     };
-
-    const forgotPassword = new ForgotPassword(forgotData);
+    const forgotPassword = new ForgotPassword(objectForgotPassword);
     await forgotPassword.save();
-
-    // Nếu cần gửi OTP qua email, có thể bật dòng dưới (nếu đã cấu hình sendMail)
-    // await sendMailHelper.sendMail(email, otp);
-
-    res.status(200).json({ message: "OTP đã được gửi tới email của bạn", email });
+    // Nếu có cấu hình gửi mail, bạn có thể gọi sendMailHelper.sendMail(email, otp) tại đây.
+    return res.json({ message: "OTP đã được gửi tới email của bạn", email });
   } catch (error) {
     console.error("Forgot password error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-// [GET] /user/password/otp
+// [GET] /user/password/otp - Trả về trang nhập OTP
 module.exports.otpPassword = async (req, res) => {
-  const { email } = req.query;
-  res.status(200).json({ pageTitle: "Nhập mã OTP", email });
+  const email = req.query.email;
+  return res.json({ pageTitle: "Nhập mã OTP", email });
 };
 
-// [POST] /user/password/otp
+// [POST] /user/password/otp - Xử lý xác thực OTP
 module.exports.otpPasswordPost = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -137,42 +124,39 @@ module.exports.otpPasswordPost = async (req, res) => {
     }
     const user = await User.findOne({ email });
     res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
-    res.status(200).json({ message: "OTP hợp lệ", user });
+    return res.json({ message: "OTP hợp lệ", user });
   } catch (error) {
     console.error("OTP error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-// [GET] /user/password/reset
+// [GET] /user/password/reset - Trả về trang đổi mật khẩu
 module.exports.resetPassword = async (req, res) => {
-  res.status(200).json({
-    pageTitle: "Đổi mật khẩu",
-    message: "Reset password endpoint",
-  });
+  return res.json({ pageTitle: "Đổi mật khẩu", message: "Reset password endpoint" });
 };
 
-// [POST] /user/password/reset
+// [POST] /user/password/reset - Xử lý đổi mật khẩu
 module.exports.resetPasswordPost = async (req, res) => {
   try {
     const { password } = req.body;
     const tokenUser = req.cookies.tokenUser;
     await User.updateOne({ tokenUser }, { password: md5(password) });
-    res.status(200).json({ message: "Mật khẩu đã được thay đổi" });
+    return res.json({ message: "Mật khẩu đã được thay đổi" });
   } catch (error) {
     console.error("Reset password error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-// [GET] /user/info
+// [GET] /user/info - Lấy thông tin người dùng
 module.exports.info = async (req, res) => {
   try {
     const tokenUser = req.cookies.tokenUser;
     const infoUser = await User.findOne({ tokenUser }).select("-password");
-    res.status(200).json({ infoUser });
+    return res.json({ infoUser });
   } catch (error) {
     console.error("User info error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };

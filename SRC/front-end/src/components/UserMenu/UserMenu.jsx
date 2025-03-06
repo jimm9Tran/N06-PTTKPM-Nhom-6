@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
-import { FiLogOut, FiUser, FiShoppingBag } from 'react-icons/fi';
-import { AuthContext } from '../../context/AuthContext';
+// src/components/UserMenu/UserMenu.jsx
+import React, { useContext, useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import { FiLogOut, FiUser, FiShoppingBag } from "react-icons/fi";
+import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const UserMenu = () => {
   const { user, logout } = useContext(AuthContext);
@@ -21,19 +23,30 @@ const UserMenu = () => {
     };
   }, []);
 
+  const handleLogout = async () => {
+    setIsOpen(false);
+    try {
+      await logout(); // logout đã gọi toast bên AuthContext
+      // Nếu muốn, có thể gọi thêm toast ở đây:
+      // toast.success("Đăng xuất thành công");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Có lỗi khi đăng xuất");
+    }
+  };
+
   return (
     <div className="relative" ref={menuRef}>
       <button
-        onClick={() => setIsOpen(prev => !prev)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="w-8 h-8 rounded-full overflow-hidden border border-gray-300 dark:border-gray-700 focus:outline-none"
       >
-        {user ? (
-          // <img
-          //   src={user.avatar || "https://via.placeholder.com/40"}
-          //   alt="User Avatar"
-          //   className="w-full h-full object-cover"
-          // />
-          <FaUser className="w-full h-full text-gray-600 dark:text-gray-300" />
+        {user && user.avatar ? (
+          <img
+            src={user.avatar}
+            alt="User Avatar"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <FaUser className="w-full h-full text-gray-600 dark:text-gray-300" />
         )}
@@ -63,10 +76,7 @@ const UserMenu = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      logout();
-                    }}
+                    onClick={handleLogout}
                     className="w-full text-left flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <FiLogOut className="mr-2" /> Đăng xuất

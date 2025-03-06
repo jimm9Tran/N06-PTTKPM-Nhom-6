@@ -1,19 +1,31 @@
 // src/components/ProductDetail.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProductDetail } from '../../services/productService';
+import { addToCart } from '../../services/cartService';
+import { CartContext } from '../../context/CartContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetail = () => {
   const { slugProduct } = useParams();
   const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addProductToCart } = useContext(CartContext);
 
+  // Lấy chi tiết sản phẩm theo slug
   useEffect(() => {
     async function fetchDetail() {
       try {
         const response = await getProductDetail(slugProduct);
         setProduct(response.data.product);
+        // Nếu sản phẩm có kích thước, đặt kích thước mặc định là phần tử đầu tiên
+        if (response.data.product.sizes && response.data.product.sizes.length > 0) {
+          setSelectedSize(response.data.product.sizes[0].size);
+        }
       } catch (err) {
         console.error("Error fetching product detail:", err);
         setError(err);
@@ -24,20 +36,35 @@ const ProductDetail = () => {
     fetchDetail();
   }, [slugProduct]);
 
+  // Hàm xử lý thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = async () => {
+    try {
+      await addProductToCart(product._id, quantity, selectedSize);
+      toast.success("Đã thêm sản phẩm vào giỏ hàng");
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      toast.error("Lỗi khi thêm sản phẩm vào giỏ hàng");
+    }
+  };
+
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (error) return <div className="text-center py-10">Error loading product details.</div>;
   if (!product) return <div className="text-center py-10">Product not found.</div>;
 
   return (
     <section className="text-gray-700 body-font overflow-hidden bg-white dark:bg-gray-900 dark:text-white">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="container px-5 py-24 mx-auto">
         <div className="lg:w-4/5 mx-auto flex flex-wrap">
-          {/* Hình ảnh sản phẩm với hiệu ứng zoom khi hover */}
-          <img 
-            alt={product.title} 
-            className="lg:w-1/2 w-full object-contain object-center rounded border border-gray-200 dark:border-gray-700 transition-transform duration-300 transform hover:scale-105" 
-            src={product.thumbnail || "https://via.placeholder.com/600"} 
-          />
+          {/* Phần hiển thị hình ảnh sản phẩm */}
+          <div className="lg:w-1/2 w-full">
+            <img 
+              alt={product.title} 
+              className="object-contain object-center rounded border border-gray-200 dark:border-gray-700 transition-transform duration-300 transform hover:scale-105" 
+              src={product.thumbnail || "https://via.placeholder.com/600"} 
+            />
+          </div>
+          {/* Phần hiển thị thông tin sản phẩm */}
           <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
             <h2 className="text-sm title-font text-gray-500 tracking-widest">
               {product.product_category_id?.title || "BRAND NAME"}
@@ -45,30 +72,27 @@ const ProductDetail = () => {
             <h1 className="text-gray-900 dark:text-white text-3xl title-font font-medium mb-1">
               {product.title}
             </h1>
-            {/* Đánh giá sản phẩm */}
             <div className="flex mb-4">
               <span className="flex items-center">
-                {
-                  [...Array(5)].map((_, index) => (
-                    <svg
-                      key={index}
-                      fill="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-4 h-4 text-red-500"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                  ))
-                }
+                {[...Array(5)].map((_, index) => (
+                  <svg
+                    key={index}
+                    fill="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    className="w-4 h-4 text-red-500"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                  </svg>
+                ))}
                 <span className="text-gray-600 ml-3">
                   {product.reviewCount || "162 Reviews"}
                 </span>
               </span>
               <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200">
-                {/* icon mạng xã hội */}
+                {/* Ví dụ hiển thị icon mạng xã hội */}
                 <a className="text-gray-500" href="#">
                   <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
                     <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
@@ -86,9 +110,7 @@ const ProductDetail = () => {
                 </a>
               </span>
             </div>
-            <p className="leading-relaxed">
-              {product.description || "No description provided."}
-            </p>
+            {/* Phần chọn màu sắc và kích thước */}
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
               <div className="flex">
                 <span className="mr-3">Màu sắc</span>
@@ -101,22 +123,28 @@ const ProductDetail = () => {
                     ></button>
                   ))
                 ) : (
-                  <span>No color options</span>
+                  <span>Không có màu</span>
                 )}
               </div>
               <div className="flex ml-6 items-center">
                 <span className="mr-3">Size</span>
                 <div className="relative">
-                  <select className="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-10">
+                  <select
+                    className="rounded border appearance-none border-gray-400 dark:border-gray-600 dark:bg-gray-800 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-10 dark:text-white"
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                  >
                     {product.sizes && product.sizes.length > 0 ? (
                       product.sizes.map((s, index) => (
-                        <option key={index}>{s.size}</option>
+                        <option key={index} value={s.size}>
+                          {s.size}
+                        </option>
                       ))
                     ) : (
-                      <option>Tiêu chuẩn</option>
+                      <option value="">Tiêu chuẩn</option>
                     )}
                   </select>
-                  <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
+                  <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 dark:text-gray-300 pointer-events-none flex items-center justify-center">
                     <svg
                       fill="none"
                       stroke="currentColor"
@@ -132,6 +160,7 @@ const ProductDetail = () => {
                 </div>
               </div>
             </div>
+            {/* Phần hiển thị giá và nút thêm vào giỏ hàng */}
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900 dark:text-white">
                 {new Intl.NumberFormat("vi-VN", {
@@ -141,10 +170,7 @@ const ProductDetail = () => {
               </span>
               <button
                 className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded"
-                onClick={() => {
-                  // Xử lý thêm sản phẩm vào giỏ hàng
-                  console.log("Add to cart", product);
-                }}
+                onClick={handleAddToCart}
               >
                 Thêm vào giỏ hàng
               </button>
@@ -162,6 +188,14 @@ const ProductDetail = () => {
               </button>
             </div>
           </div>
+        </div>
+        {/* Phần mô tả sản phẩm */}
+        <div className="container mt-12 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold mb-5 text-center">Mô tả sản phẩm</h3>
+          <div
+            className="prose dark:prose-invert leading-relaxed mx-auto"
+            dangerouslySetInnerHTML={{ __html: product.description || "<p>Không có mô tả sản phẩm.</p>" }}
+          />
         </div>
       </div>
     </section>

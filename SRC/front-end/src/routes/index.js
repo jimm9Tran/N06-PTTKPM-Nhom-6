@@ -6,6 +6,7 @@ import ProductDetailPage from "../pages/ProductDetailPage/ProductDetailPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
+import CartPage from "../pages/CartPage/CartPage";
 
 export const routes = [
   {
@@ -23,6 +24,12 @@ export const routes = [
   {
     path: '/search',
     page: SearchPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: '/cart',
+    page: CartPage,
     isShowHeader: true,
     isShowFooter: true,
   },

@@ -1,3 +1,4 @@
+// src/components/Navbar/Navbar.jsx
 import React, { useContext, useState } from 'react';
 import { FaCaretDown, FaCartShopping } from 'react-icons/fa6';
 import { IoMdSearch } from 'react-icons/io';
@@ -5,6 +6,7 @@ import DarkMode from './DarkMode';
 import UserMenu from '../UserMenu/UserMenu';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { CartContext } from '../../context/CartContext';
 
 const MenuLinks = [
   { id: 1, name: "Trang chủ", link: "/" },
@@ -21,11 +23,12 @@ const DropdownLinks = [
 
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
+  const { cart } = useContext(CartContext);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Thực hiện hành động đăng xuất (gọi API nếu cần)
+    // Thực hiện hành động đăng xuất
     setUser(null);
   };
 
@@ -36,11 +39,16 @@ const Navbar = () => {
     }
   };
 
+  // Tính tổng số lượng sản phẩm từ giỏ hàng có trong CartContext
+  const cartQuantity = cart && cart.products 
+    ? cart.products.reduce((sum, item) => sum + item.quantity, 0) 
+    : 0;
+
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
       <div className="py-4">
         <div className="container flex justify-between items-center">
-          {/* Logo and Links section */}
+          {/* Logo và Menu */}
           <div className="flex items-center gap-4">
             <Link
               to="/"
@@ -48,7 +56,6 @@ const Navbar = () => {
             >
               JM Shoes
             </Link>
-            {/* Menu Items */}
             <div className="hidden lg:block">
               <ul className="flex items-center gap-4">
                 {MenuLinks.map((data) => (
@@ -61,7 +68,6 @@ const Navbar = () => {
                     </Link>
                   </li>
                 ))}
-
                 {/* Dropdown */}
                 <li className="relative cursor-pointer group">
                   <Link
@@ -73,8 +79,6 @@ const Navbar = () => {
                       <FaCaretDown className="group-hover:rotate-180 duration-300" />
                     </span>
                   </Link>
-
-                  {/* Dropdown Links */}
                   <div className="absolute z-[9999] hidden group-hover:block w-[200px] rounded-md bg-white shadow-md dark:bg-gray-900 p-2 dark:text-white">
                     <ul className="space-y-2">
                       {DropdownLinks.map((data) => (
@@ -94,9 +98,9 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Navbar Right section */}
+          {/* Phần bên phải Navbar */}
           <div className="flex justify-between items-center gap-4">
-            {/* Search Bar section */}
+            {/* Thanh tìm kiếm */}
             <div className="relative group hidden sm:block">
               <form onSubmit={handleSearchSubmit} className="relative">
                 <input
@@ -111,19 +115,18 @@ const Navbar = () => {
                 </button>
               </form>
             </div>
-
-            {/* Order-button section */}
-            <button className="relative p-3">
-              <FaCartShopping className="text-xl text-gray-600 dark:text-gray-400" />
-              <div className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs">
-                4
-              </div>
-            </button>
-
-            {/* Dark Mode section */}
+            {/* Giỏ hàng */}
+            <Link to="/cart">
+              <button className="relative p-3">
+                <FaCartShopping className="text-xl text-gray-600 dark:text-gray-400" />
+                <div className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs">
+                  {cartQuantity}
+                </div>
+              </button>
+            </Link>
+            {/* Dark Mode */}
             <DarkMode />
-
-            {/* User Menu section */}
+            {/* User Menu */}
             <UserMenu user={user} onLogout={handleLogout} />
           </div>
         </div>
@@ -132,4 +135,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar;  

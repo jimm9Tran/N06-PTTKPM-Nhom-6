@@ -46,4 +46,3 @@ export const resetPassword = (password) => {
 export const getUserInfo = () => {
   return axios.get(`${API_BASE_URL}/user/info`, { withCredentials: true });
 };
-
