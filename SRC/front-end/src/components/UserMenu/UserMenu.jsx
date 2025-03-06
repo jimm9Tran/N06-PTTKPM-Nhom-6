@@ -26,9 +26,8 @@ const UserMenu = () => {
   const handleLogout = async () => {
     setIsOpen(false);
     try {
-      await logout(); // logout đã gọi toast bên AuthContext
-      // Nếu muốn, có thể gọi thêm toast ở đây:
-      // toast.success("Đăng xuất thành công");
+      await logout();
+      toast.success("Đăng xuất thành công");
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("Có lỗi khi đăng xuất");

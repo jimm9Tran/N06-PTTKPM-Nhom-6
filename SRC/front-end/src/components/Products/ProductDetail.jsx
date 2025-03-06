@@ -1,11 +1,11 @@
-// src/components/ProductDetail.jsx
+// src/components/Products/ProductDetail.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProductDetail } from '../../services/productService';
-import { addToCart } from '../../services/cartService';
 import { CartContext } from '../../context/CartContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ProductDetailSkeleton from './ProductDetailSkeleton';
 
 const ProductDetail = () => {
   const { slugProduct } = useParams();
@@ -14,17 +14,16 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { addProductToCart } = useContext(CartContext);
+  const { addProductToCart, fetchCart } = useContext(CartContext);
 
-  // Lấy chi tiết sản phẩm theo slug
   useEffect(() => {
     async function fetchDetail() {
       try {
         const response = await getProductDetail(slugProduct);
-        setProduct(response.data.product);
-        // Nếu sản phẩm có kích thước, đặt kích thước mặc định là phần tử đầu tiên
-        if (response.data.product.sizes && response.data.product.sizes.length > 0) {
-          setSelectedSize(response.data.product.sizes[0].size);
+        const prod = response.data.product;
+        setProduct(prod);
+        if (prod.sizes && prod.sizes.length > 0) {
+          setSelectedSize(prod.sizes[0].size);
         }
       } catch (err) {
         console.error("Error fetching product detail:", err);
@@ -36,10 +35,10 @@ const ProductDetail = () => {
     fetchDetail();
   }, [slugProduct]);
 
-  // Hàm xử lý thêm sản phẩm vào giỏ hàng
   const handleAddToCart = async () => {
     try {
       await addProductToCart(product._id, quantity, selectedSize);
+      await fetchCart(); 
       toast.success("Đã thêm sản phẩm vào giỏ hàng");
     } catch (err) {
       console.error("Error adding to cart:", err);
@@ -47,7 +46,7 @@ const ProductDetail = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <ProductDetailSkeleton />;
   if (error) return <div className="text-center py-10">Error loading product details.</div>;
   if (!product) return <div className="text-center py-10">Product not found.</div>;
 

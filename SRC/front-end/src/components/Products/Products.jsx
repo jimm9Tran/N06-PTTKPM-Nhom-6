@@ -1,7 +1,9 @@
+// src/components/Products/Products.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Heading from '../Shared/Heading';
 import ProductCard from './ProductCard';
+import ProductCardSkeleton from './ProductSkeleton';
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -19,21 +21,13 @@ function Products() {
       });
   }, []);
 
-  // console.log(products);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div>
-      <div className="container">
-        {/* Header section */}
-        <Heading title="Most Popular Sneaker" subtitle={"Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal"} />
-
-        {/* Hiển thị các sản phẩm */}
-        <ProductCard data={products} />
-      </div>
+    <div className="container">
+      <Heading 
+        title="Most Popular Sneaker" 
+        subtitle="Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal" 
+      />
+      {loading ? <ProductCardSkeleton /> : <ProductCard data={products} />}
     </div>
   );
 }

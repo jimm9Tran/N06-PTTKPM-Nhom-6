@@ -28,14 +28,12 @@ const CartPage = () => {
     fetchCart();
   }, []);
 
-  // Hàm cập nhật số lượng sản phẩm
   const handleQuantityChange = async (productId, newQuantity, size) => {
     const quantity = parseInt(newQuantity);
     if (isNaN(quantity) || quantity < 1) return;
     try {
       await updateCart(productId, quantity, size);
       toast.success("Cập nhật giỏ hàng thành công");
-      // Cập nhật lại giỏ hàng sau khi thay đổi số lượng
       fetchCart();
     } catch (err) {
       console.error("Error updating cart:", err);
@@ -48,7 +46,6 @@ const CartPage = () => {
     try {
       await deleteFromCart(productId, size);
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
-      // Sau khi xóa, cập nhật lại giỏ hàng
       fetchCart();
     } catch (err) {
       console.error("Error deleting cart item:", err);
@@ -57,7 +54,41 @@ const CartPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Đang tải giỏ hàng...</div>;
+    return (
+      <div className="min-h-screen py-8 bg-white dark:bg-gray-900 dark:text-white duration-200">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl font-semibold mb-4">Giỏ hàng của bạn</h1>
+          <div className="flex flex-col md:flex-row gap-4 animate-pulse">
+            <div className="md:w-3/4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-5"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/6"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+                </div>
+              </div>
+              <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            </div>
+
+            <div className="md:w-1/4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                </div>
+                <div className="mt-5 h-10 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              </div>
+            </div>
+          </div>
+          <ToastContainer />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -65,19 +96,33 @@ const CartPage = () => {
   }
 
   if (!cart || !cart.products || cart.products.length === 0) {
-    return <div className="text-center py-10">Giỏ hàng của bạn đang trống.</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 dark:text-white duration-200">
+        <h2 className="text-2xl font-semibold mb-2">Giỏ hàng của bạn đang trống</h2>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
+          Hãy thêm sản phẩm vào giỏ hàng để tiếp tục.
+        </p>
+        <button
+          onClick={() => navigate('/products')}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+        >
+          &larr; TIẾP TỤC XEM SẢN PHẨM
+        </button>
+      </div>
+    );
   }
 
   // Tính toán tạm tính, thuế, phí vận chuyển và tổng tiền (ví dụ đơn giản)
   const subtotal = cart.totalPrice || cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-  const taxes = subtotal * 0.01; // Giả sử thuế 1%
+  const taxes = subtotal * 0.01;
   const shipping = 0;
   const total = subtotal + taxes + shipping;
 
   return (
-    <div className="h-screen py-8 bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden">
+    <div className="min-h-screen py-8 bg-white dark:bg-gray-900 dark:text-white duration-200">
       <div className="container mx-auto px-4">
         <h1 className="text-2xl font-semibold mb-4">Giỏ hàng của bạn</h1>
+
         <div className="flex flex-col md:flex-row gap-4">
           {/* Danh sách sản phẩm */}
           <div className="md:w-3/4">
@@ -89,7 +134,7 @@ const CartPage = () => {
                     <th className="text-left font-semibold">Giá</th>
                     <th className="text-left font-semibold">Số lượng</th>
                     <th className="text-left font-semibold">Tổng</th>
-                    <th className="text-left font-semibold">Thao tác</th>
+                    <th className="text-left font-semibold">Xoá SP</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -103,10 +148,12 @@ const CartPage = () => {
                             alt={item.productInfor?.title || "Hình sản phẩm"}
                           />
                           <div>
-                            <span className="font-semibold">{item.productInfor?.title}</span>
+                            <span className="font-semibold">
+                              {item.productInfor?.title}
+                            </span>
                             {item.size && (
                               <span className="text-sm text-gray-500 dark:text-gray-300 block">
-                                Size: {item.size}
+                                Kích thước: {item.size}
                               </span>
                             )}
                           </div>
@@ -145,7 +192,7 @@ const CartPage = () => {
                           currency: "VND",
                         }).format(item.totalPrice || 0)}
                       </td>
-                      <td className="py-4 flex items-center justify-center mt-3">
+                      <td className="py-4 flex items-center justify-center">
                         <button
                           className="text-red-500 hover:text-red-700 text-center w-8 h-8"
                           onClick={() => handleDelete(item.product_id, item.size)}
@@ -158,8 +205,17 @@ const CartPage = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Nút "Tiếp tục xem sản phẩm" */}
+            <button
+              onClick={() => navigate('/products')}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+            >
+              &larr; TIẾP TỤC XEM SẢN PHẨM
+            </button>
           </div>
-          {/* Phần Summary */}
+
+          {/* Phần Tóm tắt (Summary) */}
           <div className="md:w-1/4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <h2 className="text-lg font-semibold mb-4">Tóm tắt</h2>

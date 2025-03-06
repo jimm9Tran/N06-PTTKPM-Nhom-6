@@ -15,6 +15,7 @@ export const CartProvider = ({ children }) => {
     try {
       const response = await getCart();
       setCart(response.data.cartDetail);
+      setError(null);
     } catch (err) {
       console.error("Lỗi khi tải giỏ hàng:", err);
       setError("Lỗi khi tải giỏ hàng");
@@ -70,7 +71,7 @@ export const CartProvider = ({ children }) => {
         addProductToCart,
         updateProductQuantity,
         removeProductFromCart,
-        setCart, // Nếu cần cập nhật thủ công
+        setCart,
       }}
     >
       {children}

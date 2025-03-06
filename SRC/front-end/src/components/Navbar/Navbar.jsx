@@ -44,6 +44,8 @@ const Navbar = () => {
     ? cart.products.reduce((sum, item) => sum + item.quantity, 0) 
     : 0;
 
+  // console.log(cart)
+
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
       <div className="py-4">

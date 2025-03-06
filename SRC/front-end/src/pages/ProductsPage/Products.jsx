@@ -1,7 +1,9 @@
 // src/components/Products.jsx
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
+import ProductCardSkeleton from './ProductCardSkeleton';
 import { getProducts } from '../../services/productService';
+import  Heading from '../../components/Shared/Heading'
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -24,18 +26,25 @@ const Products = () => {
     fetchProducts();
   }, [currentPage]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="container">
-      <h1 className="text-2xl font-bold my-5">Products</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-        {products.map((product) => (
-          <ProductCard key={product._id || product.id} product={product} />
-        ))}
-      </div>
+      <Heading 
+        title="Most Popular Sneaker" 
+        subtitle="Nơi các mẫu giày sneaker mới nhất với mức giá Steal Deal" 
+      />
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+          {products.map((product) => (
+            <ProductCard key={product._id || product.id} product={product} />
+          ))}
+        </div>
+      )}
 
       {/* Phân trang */}
       <div className="flex justify-center items-center space-x-2 mt-6">
