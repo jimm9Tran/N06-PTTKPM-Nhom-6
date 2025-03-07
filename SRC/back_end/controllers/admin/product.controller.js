@@ -292,43 +292,56 @@ module.exports.edit = async (req, res) => {
     
 };
 
-
 // [PATCH] //admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
     const id = req.params.id;
-
+  
     req.body.price = parseFloat(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
     req.body.position = parseInt(req.body.position);
-
-
-    if (req.file) {
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
-    }
-
-    try {
-        const updatedBy = {
-            account_id: res.locals.user.id,
-            updatedAt: new Date()
+  
+    // Xử lý sizes tương tự như createPost
+    let sizesArr = [];
+    if (req.body['sizes[][size]'] && req.body['sizes[][quantity]']) {
+      let sizesValues = req.body['sizes[][size]'];
+      let quantitiesValues = req.body['sizes[][quantity]'];
+  
+      if (!Array.isArray(sizesValues)) sizesValues = [sizesValues];
+      if (!Array.isArray(quantitiesValues)) quantitiesValues = [quantitiesValues];
+  
+      for (let i = 0; i < sizesValues.length; i++) {
+        let sizeVal = sizesValues[i] ? sizesValues[i].trim() : "";
+        let quantityVal = parseInt(quantitiesValues[i]) || 0;
+        if (sizeVal !== "" || quantityVal > 0) {
+          sizesArr.push({ size: sizeVal, quantity: quantityVal });
         }
-
-        await Products.updateOne(
-            {
-            _id: id
-            }, 
-            {
-                ...req.body,
-                $push: {updatedBy: updatedBy}
-            }
-        );
-
-        req.flash("success", `Đã cập nhật thành công`);
-    } catch (error) {
-        req.flash("error", `Đã cập nhật thất bại`);
+      }
     }
-
-    res.redirect("back");
+    req.body.sizes = sizesArr;
+    delete req.body['sizes[][size]'];
+    delete req.body['sizes[][quantity]'];
+  
+    try {
+      const updatedBy = {
+        account_id: res.locals.user.id,
+        updatedAt: new Date()
+      };
+  
+      await Products.updateOne(
+        { _id: id },
+        {
+          ...req.body,
+          $push: { updatedBy: updatedBy }
+        }
+      );
+  
+      req.flash("success", "Đã cập nhật thành công");
+    } catch (error) {
+      req.flash("error", "Đã cập nhật thất bại");
+    }
+  
+    res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
 
 

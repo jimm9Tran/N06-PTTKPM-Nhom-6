@@ -65,8 +65,18 @@ block main
                 //--- Hàng 6: Ảnh sản phẩm ---
                 .form-group.mb-3
                   label(for="thumbnail") Ảnh sản phẩm
-                  input#thumbnail.form-control-file(type="file", name="thumbnail", accept="image/*", upload-image-input)
-                  img.upload-image-preview.mt-2(src="", alt="Preview", style="max-width: 200px;")
+                  input#thumbnail.form-control-file(
+                    type="file",
+                    name="thumbnail",
+                    accept="image/*",
+                    data-upload-image-input
+                  )
+                  img.upload-image-preview.mt-2(
+                    src="",
+                    alt="Preview",
+                    style="max-width: 200px;",
+                    data-upload-image-preview
+                  )
                 //--- Hàng 7: Trạng thái hoạt động ---
                 .form-group.mb-3
                   label Trạng thái
@@ -79,9 +89,8 @@ block main
                 //--- Nút Submit ---
                 button.btn.btn-primary.btn-block(type="submit") Tạo mới
             .card-footer.text-right
-              small.text-muted &copy; 2025 Your Company Name
+              small.text-muted &copy; 2025 
 
-      // Script xử lý thêm khối nhập kích thước mới
       script.
         document.addEventListener('DOMContentLoaded', function(){
           var sizesContainer = document.getElementById('sizes-container');

@@ -3,156 +3,190 @@ include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 
 block main
-    if(role.permissions.includes("products_edit"))
-        +alert-error(3000)
-        +alert-success(3000)
-        
-        h1(class='mb-4') Chỉnh sửa sản phẩm
-
-        form(
-            action=`${prefixAdmin}/products/edit/${product.id}?_method=PATCH`
-            id="form-edit-product"
-            method="POST"
-            enctype="multipart/form-data"
-        )
-            div(class="form-group")
-                label(for="title") Tiêu đề
-                input(
-                    type="text"
-                    class="form-control"
-                    id="title"
-                    name="title"
-                    required
-                    value=product.title
-                )
-            
-            div(class="form-group")
-                label(for="product_category_id") Danh mục
-                select(
-                    name="product_category_id"
-                    id="product_category_id"
-                    class="form-control"
-                )
-                    option(value="") -- Chọn danh mục --
-                    if (category)
+  if(role.permissions.includes("products_edit"))
+    +alert-error(3000)
+    +alert-success(3000)
+    .container.mt-5
+      .row.justify-content-center
+        .col-lg-10
+          .card.shadow
+            .card-header.bg-primary.text-white
+              h3.mb-0.text-center Chỉnh sửa Sản phẩm
+            .card-body
+              form#form-edit-product(
+                action=`${prefixAdmin}/products/edit/${product.id}?_method=PATCH`,
+                method="POST",
+                enctype="multipart/form-data"
+              )
+                //--- Hàng 1: Tiêu đề & Danh mục ---
+                .form-row.mb-3
+                  .form-group.col-md-6
+                    label(for="title") Tiêu đề
+                    input#title.form-control(
+                      type="text",
+                      name="title",
+                      placeholder="Nhập tiêu đề sản phẩm",
+                      required,
+                      value=product.title
+                    )
+                  .form-group.col-md-6
+                    label(for="product_category_id") Danh mục
+                    select#product_category_id.form-control(name="product_category_id")
+                      option(value="") -- Chọn danh mục --
+                      if category
                         +select-tree(category, 1, product.product_category_id)
-            
-            div(class="form-group form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="featured1"
-                    name="featured"
-                    value="1"
-                    checked=(product.featured == "1" ? true : false)
-                )
-                label(for="featured1" class="form-check-lable") Nổi bật 
-            div(class="form-group form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="featured0"
-                    name="featured"
-                    value="0"
-                    checked=(product.featured == "0" ? true : false)
-                )
-                label(for="featured0" class="form-check-lable") Không
+                //--- Hàng 2: Nổi bật & Vị trí ---
+                .form-row.mb-3
+                  .form-group.col-md-6
+                    label Trạng thái Nổi bật
+                    .custom-control.custom-radio.custom-control-inline
+                      input#featured1.custom-control-input(
+                        type="radio",
+                        name="featured",
+                        value="1",
+                        checked=(product.featured == "1")
+                      )
+                      label.custom-control-label(for="featured1") Nổi bật
+                    .custom-control.custom-radio.custom-control-inline
+                      input#featured0.custom-control-input(
+                        type="radio",
+                        name="featured",
+                        value="0",
+                        checked=(product.featured == "0")
+                      )
+                      label.custom-control-label(for="featured0") Không
+                  .form-group.col-md-6
+                    label(for="position") Vị trí
+                    input#position.form-control(
+                      type="number",
+                      name="position",
+                      placeholder="Tự động tăng",
+                      min="1",
+                      value=product.position
+                    )
+                //--- Hàng 3: Mô tả ---
+                .form-group.mb-3
+                  label(for="desc") Mô tả
+                  textarea#desc.form-control.tinymce(
+                    name="description",
+                    rows="5",
+                    placeholder="Mô tả chi tiết sản phẩm"
+                  ) !{product.description}
+                //--- Hàng 4: Giá, Giảm giá, Số lượng ---
+                .form-row.mb-3
+                  .form-group.col-md-4
+                    label(for="price") Giá
+                    input#price.form-control(
+                      type="number",
+                      name="price",
+                      value=product.price,
+                      min="0",
+                      step="0.01"
+                    )
+                  .form-group.col-md-4
+                    label(for="discount") % Giảm giá
+                    input#discount.form-control(
+                      type="number",
+                      name="discountPercentage",
+                      value=product.discountPercentage,
+                      min="0"
+                    )
+                  .form-group.col-md-4
+                    label(for="stock") Số lượng
+                    input#stock.form-control(
+                      type="number",
+                      name="stock",
+                      value=product.stock,
+                      min="0"
+                    )
+                //--- Hàng 5: Kích thước (Nếu có) ---
+                .form-group.mb-3
+                  label Kích thước (Nếu có)
+                  #sizes-container
+                    each size in (product.sizes && product.sizes.length ? product.sizes : [{}])
+                      .form-row.mb-2.size-item
+                        .form-group.col-md-6
+                          input.form-control(
+                            type="text",
+                            name="sizes[][size]",
+                            placeholder="Ví dụ: 39 hoặc M",
+                            value=size.size || ""
+                          )
+                        .form-group.col-md-6
+                          input.form-control(
+                            type="number",
+                            name="sizes[][quantity]",
+                            placeholder="Số lượng",
+                            value=size.quantity || ""
+                          )
+                  button#add-size-button.btn.btn-outline-secondary(type="button") Thêm size 
+                //--- Hàng 6: Ảnh sản phẩm ---
+                .form-group.mb-3
+                  label(for="thumbnail") Ảnh sản phẩm
+                  input#thumbnail.form-control-file(
+                      type="file",
+                      name="thumbnail",
+                      accept="image/*",
+                      data-upload-image-input
+                  )
+                  img.upload-image-preview.mt-2(
+                      src="",
+                      alt="Preview",
+                      style="max-width: 200px;",
+                      data-upload-image-preview
+                  )
+                //--- Hàng 7: Trạng thái hoạt động ---
+                .form-group.mb-3
+                  label Trạng thái
+                  .custom-control.custom-radio.custom-control-inline
+                    input#statusActive.custom-control-input(
+                      type="radio",
+                      name="status",
+                      value="active",
+                      checked=(product.status == "active")
+                    )
+                    label.custom-control-label(for="statusActive") Hoạt động
+                  .custom-control.custom-radio.custom-control-inline
+                    input#statusInActive.custom-control-input(
+                      type="radio",
+                      name="status",
+                      value="inactive",
+                      checked=(product.status == "inactive")
+                    )
+                    label.custom-control-label(for="statusInActive") Dừng hoạt động
+                //--- Nút Submit ---
+                button.btn.btn-primary.btn-block(type="submit") Cập nhật
+            .card-footer.text-right
+              small.text-muted &copy; 2025
 
-            div(class="form-group")
-                label(for="desc") Mô tả
-                textarea(
-                    class="form-control tinymce"
-                    id="desc"
-                    name="description"
-                    row="5"
-                    value=product.description
-                ) !{product.description}
-            
-            div(class="form-group")
-                label(for="price") Giá
-                input(
-                    type="number"
-                    class="form-control"
-                    id="price"
-                    name="price"
-                    value=product.price
-                    min="0"
-                )
-
-            div(class="form-group")
-                label(for="discount") % Giảm giá
-                input(
-                    type="number"
-                    class="form-control"
-                    id="discount"
-                    name="discountPercentage"
-                    value=product.discountPercentage
-                    min="0"
-                )
-            
-            div(class="form-group")
-                label(for="stock") Số lượng
-                input(
-                    type="number"
-                    class="form-control"
-                    id="stock"
-                    name="stock"
-                    value=product.stock
-                    min="0"
-                )
-
-            div(class="form-group" upload-image)
-                label(for="thumbnail") Ảnh
-                input(
-                    type="file"
-                    class="form-control-file"
-                    id="thumbnail"
-                    name="thumbnail"
-                    accept="image/*"
-                    upload-image-input
-                )
-                img(
-                    src=product.thumbnail
-                    upload-image-preview
-                    class="image-preview"
-                )
-            
-            div(class="form-group")
-                label(for="position") Vị trí
-                input(
-                    type="number"
-                    class="form-control"
-                    id="position"
-                    name="position"
-                    placeholder="Tự động tăng"
-                    min="1"
-                    value=product.position
-                )
-            
-            div(class="form-group form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="statusActive"
-                    name="status"
-                    value="active"
-                    checked=(product.status == "active" ? true : false)
-                )
-                label(for="statusActive" class="form-check-label") Hoạt động
-            
-            div(class="form-group form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="statusInActive"
-                    name="status"
-                    value="inactive"
-                    checked=(product.status == "inactive" ? true : false)
-                )
-                label(for="statusActive" class="form-check-label") Dừng hoạt động
-            
-            div(class="form-group")
-                button(
-                    type="submit"
-                    class="btn btn-primary"
-                ) Cập nhật
+    script.
+      document.addEventListener('DOMContentLoaded', function(){
+        // Xử lý thêm size
+        var sizesContainer = document.getElementById('sizes-container');
+        var addSizeButton = document.getElementById('add-size-button');
+        if(addSizeButton){
+          addSizeButton.addEventListener('click', function(){
+            var newRow = document.createElement('div');
+            newRow.className = 'form-row mb-2 size-item';
+            newRow.innerHTML = '<div class="form-group col-md-6">' +
+                                 '<input type="text" name="sizes[][size]" placeholder="Ví dụ: 39 hoặc M" class="form-control" />' +
+                               '</div>' +
+                               '<div class="form-group col-md-6">' +
+                                 '<input type="number" name="sizes[][quantity]" placeholder="Số lượng" class="form-control" />' +
+                               '</div>';
+            sizesContainer.appendChild(newRow);
+          });
+        }
+      
+        // Xử lý preview ảnh
+        const uploadImageInput = document.querySelector("[data-upload-image-input]");
+        const uploadImagePreview = document.querySelector("[data-upload-image-preview]");
+        if (uploadImageInput) {
+          uploadImageInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              uploadImagePreview.src = URL.createObjectURL(file);
+            }
+          });
+        }
+      });

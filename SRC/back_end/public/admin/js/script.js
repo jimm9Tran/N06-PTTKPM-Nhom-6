@@ -151,12 +151,10 @@ if (showAlert) {
 
 // Upload Image
 
-const uploadImage = document.querySelector("[upload-image]");
+const uploadImage = document.querySelector("[data-upload-image-input]");
+const uploadImagePreview = document.querySelector("[data-upload-image-preview]");
 if (uploadImage) {
-    const uploadImageInput = document.querySelector("[upload-image-input]");
-    const uploadImagePreview = document.querySelector("[upload-image-preview]");
-
-    uploadImageInput.addEventListener("change", (e) => {
+    uploadImage.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
             uploadImagePreview.src = URL.createObjectURL(file);
