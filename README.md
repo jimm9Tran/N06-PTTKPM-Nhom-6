@@ -9,8 +9,9 @@ Website bán hàng giày dép được thiết kế để cung cấp một nền
 - **Ngôn ngữ:** JavaScript (Node.js)
 - **Backend:** Express.js
 - **Cơ sở dữ liệu:** MongoDB (Mongoose ODM)
-- **Frontend:** HTML, CSS (Bootstrap/SCSS), JavaScript
-- **Thanh toán trực tuyến:** Tích hợp các cổng thanh toán như PayPal, Momo.(phát triển sau)
+- **Frontend Admin:** PUG template, CSS (Bootstrap/SCSS), JavaScript,
+- **Frontend Client:** React,, CSS (TaildWindCSS V3), JavaScript,
+- **Thanh toán trực tuyến:** Tích hợp các cổng thanh toán như , Momo.(đang triển khai)
 
 ---
 
@@ -24,7 +25,7 @@ Website bán hàng giày dép được thiết kế để cung cấp một nền
 3. **Giỏ hàng:**
    - Thêm, xóa, sửa sản phẩm trong giỏ hàng.
 4. **Thanh toán trực tuyến:**
-   - Tích hợp các cổng thanh toán an toàn như PayPal, Momo. (phát triển sau)
+   - Tích hợp các cổng thanh toán an toàn như  Momo. (đang phát triển)
 5. **Theo dõi đơn hàng:**
    - Kiểm tra lịch sử đơn hàng, trạng thái giao hàng. (phát triển sau)
 
