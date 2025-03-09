@@ -7,6 +7,7 @@ import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
 import CartPage from "../pages/CartPage/CartPage";
+// import ProductCategoryPage from "../pages/ProductCategoryPage/ProductCategoryPage";
 
 export const routes = [
   {
@@ -51,6 +52,12 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+  // {
+  //   path: '/products/category/:slugCategory',
+  //   page: ProductCategoryPage,
+  //   isShowHeader: true,
+  //   isShowFooter: true,
+  // },
   {
     path: '/order',
     page: OrderPage,

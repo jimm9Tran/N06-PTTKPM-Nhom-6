@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider from "react-slick";
 import Button from '../Shared/Button';
+import { useNavigate } from 'react-router-dom';
 
 import Image1 from "../../assets/hero/air-jordan-1-low-paris-removebg-preview.png";
 import Image2 from "../../assets/hero/Travis-Scott-Air-Jordan-1-Low-OG-1-600x247-removebg-preview.png";
@@ -12,6 +13,7 @@ const HeroData = [
     subtitle: "Giày Nike Jordan 1 Low OG SP x Travis Scott ‘Medium Olive’ DM7866-200",
     title: "Air Jordan 1 Low",
     title2: "Travis Scott",
+    url: "products/detail/giay-nike-air-jordan-1-low-paris-cv3043-100-2025",
   },
   {
     id: 2,
@@ -19,6 +21,7 @@ const HeroData = [
     subtitle: "Giày Nike Air Jordan 1 Low ‘Paris’ CV3043-100",
     title: "Nike Air Jordan 1",
     title2: "SNEAKER",
+    url: "/products",
   },
 ];
 
@@ -35,6 +38,8 @@ const Hero = () => {
     pauseOnHover: false,
     pauseOnFocus: true,
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className='container'>
@@ -78,7 +83,10 @@ const Hero = () => {
                       data-aos-delay="300"
                       className='mt-4'
                     >
-                      <Button text="Mua ngay" bgColor="bg-primary" textColor="text-white" />
+                      <Button text="Mua ngay" bgColor="bg-primary" textColor="text-white" onClick={() => {
+                        console.log("Button clicked, navigating to: ", data.url);
+                        navigate(data.url);
+                      }} />
                     </div>
                   </div>
 

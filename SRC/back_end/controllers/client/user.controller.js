@@ -8,19 +8,17 @@ const ForgotPassword = require("../../models/forgot-password.model");
 
 // [GET] /user/register - Trả về thông tin trang đăng ký (dành cho React)
 module.exports.register = async (req, res) => {
-  // Trong ứng dụng React, bạn có thể trả về JSON thay vì render giao diện
   return res.json({ pageTitle: "Đăng ký tài khoản", message: "Register endpoint" });
 };
 
 // [POST] /user/register - Xử lý đăng ký tài khoản
 module.exports.registerPost = async (req, res) => {
   try {
-    // Kiểm tra email đã tồn tại chưa
     const existUser = await User.findOne({ email: req.body.email });
     if (existUser) {
       return res.status(400).json({ error: "Email đã tồn tại" });
     }
-    // Mã hóa mật khẩu
+
     req.body.password = md5(req.body.password);
     const user = new User(req.body);
     await user.save();
@@ -53,10 +51,8 @@ module.exports.loginPost = async (req, res) => {
     if (user.status === "locked") {
       return res.status(400).json({ error: "Tài khoản đang bị khóa!" });
     }
-    // Lưu token vào cookie (httpOnly để tăng bảo mật)
     res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
 
-    // Nếu có cookie giỏ hàng nhưng chưa có user_id, cập nhật giỏ hàng với user_id
     const cartId = req.cookies.cartId;
     if (cartId) {
       const cart = await Cart.findOne({ _id: cartId });
@@ -100,7 +96,6 @@ module.exports.forgotPasswordPost = async (req, res) => {
     };
     const forgotPassword = new ForgotPassword(objectForgotPassword);
     await forgotPassword.save();
-    // Nếu có cấu hình gửi mail, bạn có thể gọi sendMailHelper.sendMail(email, otp) tại đây.
     return res.json({ message: "OTP đã được gửi tới email của bạn", email });
   } catch (error) {
     console.error("Forgot password error:", error);
