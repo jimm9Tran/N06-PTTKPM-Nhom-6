@@ -20,6 +20,12 @@ aside.sidebar.bg-light.border-end(
           a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/products`)
             i.fas.fa-box-open.me-3
             span Danh sách sản phẩm
+      
+      if(1)
+        li.nav-item.border-bottom
+          a.nav-link.d-flex.align-items-center.py-3.px-4.text-dark(href=`${prefixAdmin}/orders`)
+            i.fas.fa-box-open.me-3
+            span Danh sách đơn hàng
 
       if(role.permissions.includes("roles_view"))
         li.nav-item.border-bottom

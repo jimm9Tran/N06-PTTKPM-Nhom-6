@@ -1,46 +1,45 @@
+// middlewares/cart.middleware.js
 const Cart = require("../../models/cart.model");
 
 module.exports.cartId = async (req, res, next) => {
   try {
     let cart;
-    if (!req.cookies.cartId) {
-      // Nếu không có cartId trong cookie, tạo mới một giỏ hàng
+    const cartCookie = req.cookies.cartId;
+    console.log(">>> cartId from client cookie:", req.cookies.cartId);
+
+    if (!cartCookie) {
       cart = new Cart();
       await cart.save();
 
-      const expiresCookie = 30 * 24 * 60 * 60 * 1000; // 30 ngày
       res.cookie("cartId", cart._id.toString(), {
-        expires: new Date(Date.now() + expiresCookie),
+        maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        path: "/" // đảm bảo cookie gửi đi cho mọi request trên domain
+        path: "/",
       });
+
+      console.log(">>> Created new cart with _id:", cart._id);
     } else {
-      // Nếu có cartId, tìm giỏ hàng tương ứng
-      cart = await Cart.findOne({ _id: req.cookies.cartId });
+      cart = await Cart.findById(cartCookie);
       if (!cart) {
-        // Nếu không tìm thấy cart, tạo mới và set lại cookie
         cart = new Cart();
         await cart.save();
-        const expiresCookie = 30 * 24 * 60 * 60 * 1000;
         res.cookie("cartId", cart._id.toString(), {
-          expires: new Date(Date.now() + expiresCookie),
+          maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
-          path: "/"
+          path: "/",
         });
       }
     }
 
-    // Tính tổng số lượng sản phẩm nếu có
-    if (cart.products && cart.products.length > 0) {
-      const totalQuantity = cart.products.reduce((sum, item) => sum + item.quantity, 0);
-      cart.totalQuantity = totalQuantity;
+    if (cart && cart.products && cart.products.length > 0) {
+      cart.totalQuantity = cart.products.reduce((sum, item) => sum + item.quantity, 0);
     } else {
       cart.totalQuantity = 0;
     }
 
-    // Đối với render qua pug, lưu vào res.locals
+    req.cart = cart;
     res.locals.miniCart = cart;
-    console.log("Cart ID:", req.cookies.cartId || cart._id.toString());
+
     next();
   } catch (error) {
     console.error("Error in cart middleware:", error);

@@ -5,24 +5,34 @@ const Cart = require("../../models/cart.model");
 // [GET] /cart - Lấy thông tin giỏ hàng
 module.exports.index = async (req, res) => {
   try {
-    const cartId = req.cookies.cartId;
-    const cart = await Cart.findOne({ _id: cartId }).lean();;
+    // Lấy cart đã được middleware gắn ở req.cart
+    const cart = await Cart.findById(req.cart._id).lean();
     if (!cart) {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
-    // Lấy thông tin sản phẩm cho từng item
+
+    // Lấy thông tin sản phẩm + tính totalPrice
     if (cart.products && cart.products.length > 0) {
-      for (let item of cart.products) {
-        const productInfor = await Product.findOne({ _id: item.product_id }).select("title thumbnail slug price").lean();;
-        // console.log("Product info:", productInfor);
-        item.productInfor = productInfor;
-        item.totalPrice = productInfor ? productInfor.price * item.quantity : 0;
-      }
+      // Chạy song song thay vì for loop
+      const populatedProducts = await Promise.all(
+        cart.products.map(async (item) => {
+          const productInfor = await Product.findById(item.product_id)
+            .select("title thumbnail slug price")
+            .lean();
+          const totalPrice = productInfor ? productInfor.price * item.quantity : 0;
+          return {
+            ...item,
+            productInfor,
+            totalPrice,
+          };
+        })
+      );
+      cart.products = populatedProducts;
+      cart.totalPrice = populatedProducts.reduce((sum, i) => sum + i.totalPrice, 0);
+    } else {
+      cart.totalPrice = 0;
     }
-    // Tính tổng tiền
-    const totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-    cart.totalPrice = totalPrice;
-    // console.log(cart);
+
     return res.json({ cartDetail: cart });
   } catch (error) {
     console.error("Error fetching cart:", error);
@@ -36,28 +46,34 @@ module.exports.addPost = async (req, res) => {
     const productId = req.params.productId;
     const quantity = parseInt(req.query.quantity) || 1;
     const size = req.query.size || "";
-    const cartId = req.cookies.cartId;
-    const cart = await Cart.findOne({ _id: cartId });
+
+    // Lấy cart từ req
+    const cart = await Cart.findById(req.cart._id);
     if (!cart) {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
-    // Tìm xem sản phẩm với kích thước (size) đã tồn tại trong giỏ chưa
-    const existsProductInCart = cart.products.find(item =>
-      item.product_id === productId && item.size === size
+
+    // Kiểm tra product hợp lệ
+    const productCheck = await Product.findById(productId);
+    if (!productCheck) {
+      return res.status(400).json({ error: "Sản phẩm không tồn tại." });
+    }
+
+    // Kiểm tra đã có item với (productId + size) trong cart chưa
+    const existsProductInCart = cart.products.find(
+      (item) => item.product_id.toString() === productId && item.size === size
     );
     if (existsProductInCart) {
-      const newQuantity = existsProductInCart.quantity + quantity;
-      await Cart.updateOne(
-        { _id: cartId, "products.product_id": productId, "products.size": size },
-        { $set: { "products.$.quantity": newQuantity } }
-      );
+      existsProductInCart.quantity += quantity;
     } else {
-      const newItem = { product_id: productId, quantity, size };
-      await Cart.updateOne(
-        { _id: cartId },
-        { $push: { products: newItem } }
-      );
+      cart.products.push({
+        product_id: productId,
+        quantity,
+        size,
+      });
     }
+    await cart.save();
+
     return res.json({ message: "Đã thêm sản phẩm vào giỏ hàng" });
   } catch (error) {
     console.error("Error adding product to cart:", error);
@@ -68,13 +84,20 @@ module.exports.addPost = async (req, res) => {
 // [DELETE] /cart/delete/:productId?size=
 module.exports.delete = async (req, res) => {
   try {
-    const cartId = req.cookies.cartId;
     const productId = req.params.productId;
     const size = req.query.size || "";
-    await Cart.updateOne(
-      { _id: cartId },
-      { $pull: { products: { product_id: productId, size: size } } }
+
+    const cart = await Cart.findById(req.cart._id);
+    if (!cart) {
+      return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
+    }
+
+    // Lọc bỏ item khớp productId, size
+    cart.products = cart.products.filter(
+      (item) => !(item.product_id.toString() === productId && item.size === size)
     );
+    await cart.save();
+
     return res.json({ message: "Đã xóa sản phẩm khỏi giỏ hàng" });
   } catch (error) {
     console.error("Error removing product from cart:", error);
@@ -85,20 +108,29 @@ module.exports.delete = async (req, res) => {
 // [PUT] /cart/update/:productId/:quantity?size=
 module.exports.update = async (req, res) => {
   try {
-    const cartId = req.cookies.cartId;
     const productId = req.params.productId;
     const quantity = parseInt(req.params.quantity);
     const size = req.query.size || "";
+
     if (isNaN(quantity) || quantity <= 0) {
       return res.status(400).json({ error: "Số lượng không hợp lệ" });
     }
-    const result = await Cart.updateOne(
-      { _id: cartId, "products.product_id": productId, "products.size": size },
-      { $set: { "products.$.quantity": quantity } }
-    );
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({ error: "Không thể cập nhật số lượng sản phẩm" });
+
+    const cart = await Cart.findById(req.cart._id);
+    if (!cart) {
+      return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
+
+    const itemToUpdate = cart.products.find(
+      (item) => item.product_id.toString() === productId && item.size === size
+    );
+    if (!itemToUpdate) {
+      return res.status(400).json({ error: "Không tìm thấy sản phẩm để cập nhật." });
+    }
+
+    itemToUpdate.quantity = quantity;
+    await cart.save();
+
     return res.json({ message: "Đã cập nhật số lượng sản phẩm" });
   } catch (error) {
     console.error("Error updating product quantity:", error);

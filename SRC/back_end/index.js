@@ -42,12 +42,7 @@ app.use(bodyParser.json());
 
 // Flash, cookie-parser và session 
 app.use(cookieParser("jfisdaf"));
-app.use(session({
-  secret: "secret",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60000 }
-}));
+app.use(session({cookie: {maxAge: 60000}}));
 app.use(flash());
 
 app.use(express.static("public"));

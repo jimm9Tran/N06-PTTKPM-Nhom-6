@@ -3,8 +3,8 @@ const generate = require("../helpers/generate");
 
 const userSchema = new mongoose.Schema({
     fullName: String,
-    email: String,
-    password: String,
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     tokenUser: {
         type: String,
         default: generate.generateRandomString(20)

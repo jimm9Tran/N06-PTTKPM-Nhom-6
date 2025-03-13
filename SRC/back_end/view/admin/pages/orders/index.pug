@@ -1,0 +1,64 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/pagination.pug
+include ../../mixins/moment.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+
+  .container.mt-5
+    h1.text-center.mb-4 Quản lý đơn hàng
+
+    //- Bộ lọc tìm kiếm và trạng thái
+    .card.mb-3
+      .card-header.bg-light
+        form(method="GET", action="/admin/orders")
+          .form-row
+            .col-md-4.mb-2
+              input.form-control(type="text", name="keyword", placeholder="Tìm theo tên hoặc số điện thoại", value=keyword)
+            .col-md-4.mb-2
+              select.form-control(name="status")
+                option(value="") Tất cả trạng thái
+                option(value="pending", selected=filterStatus=='pending') Chờ xử lý
+                option(value="processing", selected=filterStatus=='processing') Đang xử lý
+                option(value="shipped", selected=filterStatus=='shipped') Đã giao hàng
+                option(value="cancelled", selected=filterStatus=='cancelled') Đã hủy
+            .col-md-4.mb-2
+              button.btn.btn-primary(type="submit") Tìm kiếm
+
+    //- Bảng danh sách đơn hàng
+    if orders && orders.length > 0
+      table.table.table-hover.table-bordered
+        thead
+          tr
+            th STT
+            th Mã đơn hàng
+            th Thông tin khách hàng
+            th Tổng tiền
+            th Trạng thái
+            th Ngày đặt hàng
+            th Hành động
+        tbody
+          each order, index in orders
+            tr
+              td #{pagination.limitItems * (pagination.currentPage - 1) + index + 1}
+              td #{order._id}
+              td
+                if order.userInfo && order.userInfo.fullName
+                  p #{order.userInfo.fullName}
+                  p #{order.userInfo.phone}
+                  p #{order.userInfo.address}
+                else
+                  p Khách vãng lai
+              td #{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(order.totalPrice)}
+              td #{order.status}
+              td +formatDateTime(order.createdAt)
+              td 
+                a.btn.btn-sm.btn-primary(href=`/admin/orders/${order._id}`) Chi tiết
+    else
+      p.text-center Không có đơn hàng nào.
+
+    //- Phân trang (nếu có)
+    if pagination && pagination.totalPages > 1
+      +pagination(pagination)

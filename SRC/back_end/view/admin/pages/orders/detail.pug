@@ -1,0 +1,52 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/moment.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(3000)
+
+  .container.mt-5
+    h1.text-center.mb-4 Chi tiết đơn hàng
+
+    if order
+      .order-info.mb-4
+        h3 Mã đơn hàng: #{order._id}
+        if order.userInfo && order.userInfo.fullName
+          p Khách hàng: #{order.userInfo.fullName}
+          p Số điện thoại: #{order.userInfo.phone}
+          p Địa chỉ: #{order.userInfo.address}
+        else
+          p Khách vãng lai
+        p Tổng tiền: #{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(order.totalPrice)}
+        p Trạng thái: #{order.status}
+        p Ngày đặt hàng: +formatDateTime(order.createdAt)
+      
+      if order.products && order.products.length > 0
+        h3.mb-3 Danh sách sản phẩm
+        table.table.table-hover.table-bordered
+          thead
+            tr
+              th STT
+              th Sản phẩm
+              th Giá
+              th Số lượng
+              th Thành tiền
+          tbody
+            each item, idx in order.products
+              tr
+                td #{idx + 1}
+                td 
+                  //- Giả sử bạn đã populate thông tin sản phẩm hoặc hiển thị product_id
+                  span #{item.product_id}
+                  if item.size
+                    p Kích thước: #{item.size}
+                td #{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(item.price)}
+                td #{item.quantity}
+                td #{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(item.price * item.quantity)}
+      else
+        p Không có sản phẩm nào trong đơn hàng.
+    else
+      p Không tìm thấy đơn hàng.
+
+    a.btn.btn-secondary.mt-4(href="/admin/orders") Quay lại danh sách đơn hàng
