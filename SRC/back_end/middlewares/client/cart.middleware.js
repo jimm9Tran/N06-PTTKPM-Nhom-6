@@ -5,7 +5,7 @@ module.exports.cartId = async (req, res, next) => {
   try {
     let cart;
     const cartCookie = req.cookies.cartId;
-    console.log(">>> cartId from client cookie:", req.cookies.cartId);
+    // console.log(">>> cartId from client cookie:", req.cookies.cartId);
 
     if (!cartCookie) {
       cart = new Cart();
@@ -17,7 +17,7 @@ module.exports.cartId = async (req, res, next) => {
         path: "/",
       });
 
-      console.log(">>> Created new cart with _id:", cart._id);
+      // console.log(">>> Created new cart with _id:", cart._id);
     } else {
       cart = await Cart.findById(cartCookie);
       if (!cart) {

@@ -185,7 +185,6 @@ module.exports.otpPasswordPost = async (req, res) => {
     if (!result) {
       return res.status(400).json({ error: "OTP không hợp lệ!" });
     }
-    // (Nên check expriresAt)
 
     // OTP hợp lệ -> lấy user -> set tokenUser cookie
     const user = await User.findOne({ email });
