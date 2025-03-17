@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
 
       {product.product_category_id && (
         <h2 className="font-thin mt-2">
-          <Link  to={`/products/category/${product.product_category_id.slug}`} 
+          <Link  to={`/products/${product.product_category_id.slug}`}
                   className="font-thin mt-2 inline-block hover:underline" >
           {product.product_category_id.title}
           </Link>

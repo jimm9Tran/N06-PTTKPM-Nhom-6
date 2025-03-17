@@ -10,6 +10,7 @@ import CheckoutFailure from "../pages/CheckoutFailure/CheckoutFailure.jsx";
 import OrderPage from "../pages/OrderPage/OrderPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
 import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
+import ProductCategoryPage from "../pages/ProductCategoryPage/ProductCategoryPage.jsx";
 
 export const routes = [
   { path: '/', page: HomePage, isShowHeader: true, isShowFooter: true },
@@ -17,6 +18,7 @@ export const routes = [
   { path: '/user/register', page: RegisterPage, isShowHeader: true, isShowFooter: true },
   { path: '/products', page: ProductPage, isShowHeader: true, isShowFooter: true },
   { path: '/products/detail/:slugProduct', page: ProductDetailPage, isShowHeader: true, isShowFooter: true },
+  { path: '/products/:slugCategory', page: ProductCategoryPage, isShowHeader: true, isShowFooter: true },
   { path: '/cart', page: CartPage, isShowHeader: true, isShowFooter: true },
   { path: '/checkout', page: CheckoutPage, isShowHeader: true, isShowFooter: true },
   { path: '/checkout/success', page: CheckoutSuccess, isShowHeader: true, isShowFooter: true },

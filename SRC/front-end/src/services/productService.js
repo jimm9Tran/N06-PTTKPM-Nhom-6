@@ -12,7 +12,7 @@ export const getProductDetail = (slugProduct) => {
 };
 
 export const getProductsByCategory = (slug, page = 1, limit = 12) => {
-  return axios.get(`${API_BASE_URL}/products/category/${slug}?page=${page}&limit=${limit}`);
+  return axios.get(`${API_BASE_URL}/products/${slug}?page=${page}&limit=${limit}`);
 };
 
 export const getSearchResults = (keyword, page = 1, limit = 12) => {

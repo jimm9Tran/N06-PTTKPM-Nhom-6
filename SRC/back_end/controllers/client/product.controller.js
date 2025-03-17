@@ -18,7 +18,7 @@ module.exports.index = async (req, res) => {
       status: "active",
       deleted: false,
     })
-      .populate("product_category_id", "title")
+      .populate("product_category_id", "title slug")
       .sort({ position: "desc" })
       .skip((page - 1) * limitItem)
       .limit(limitItem);
@@ -87,29 +87,29 @@ module.exports.category = async (req, res) => {
       return res.status(404).json({ message: "Danh mục không tồn tại." });
     }
 
-    const listSubCategory = await productCategoryHelper.getSubCategory(category.id);
-    const listSubCategoryId = listSubCategory.map(item => item.id);
+    const listSubCategory = await productCategoryHelper.getSubCategory(category._id.toString());
+    const listSubCategoryId = listSubCategory.map(item => item._id);
 
     const countProducts = await Product.countDocuments({
-      product_category_id: { $in: [category.id, ...listSubCategoryId] },
+      product_category_id: { $in: [category._id, ...listSubCategoryId] },
       status: "active",
       deleted: false
     });
 
     const totalPages = Math.ceil(countProducts / limitItem);
 
-    // Lấy danh sách sản phẩm theo danh mục
     const products = await Product.find({
-      product_category_id: { $in: [category.id, ...listSubCategoryId] },
+      product_category_id: { $in: [category._id, ...listSubCategoryId] },
       status: "active",
       deleted: false
     })
-      .populate("product_category_id", "title")
+      .populate("product_category_id", "title slug")
       .sort({ position: "desc" })
       .skip((page - 1) * limitItem)
       .limit(limitItem);
 
     res.json({
+      categoryTitle: category.title, 
       products,
       currentPage: page,
       totalPages: totalPages

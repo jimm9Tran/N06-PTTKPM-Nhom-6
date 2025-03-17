@@ -9,7 +9,7 @@ module.exports.index = async (req, res) => {
         })
         .sort({ position: "desc" })
         .limit(8) 
-        .populate("product_category_id", "title"); 
+        .populate("product_category_id", "title slug"); 
 
         res.json({ products });
     } catch (error) {

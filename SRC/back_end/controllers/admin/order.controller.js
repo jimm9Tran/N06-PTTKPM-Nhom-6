@@ -4,7 +4,7 @@ const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helpers/pagination");
 
 // [GET] /admin/orders
-// Lấy danh sách đơn hàng với các chức năng tìm kiếm, lọc, phân trang
+
 exports.getOrders = async (req, res) => {
   try {
     // Đọc các tham số từ query string

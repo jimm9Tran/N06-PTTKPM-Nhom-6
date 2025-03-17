@@ -1,5 +1,5 @@
 // src/context/CartContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { getCart, addToCart, updateCart, deleteFromCart } from '../services/cartService';
 
 export const CartContext = createContext();
@@ -10,7 +10,7 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Hàm lấy giỏ hàng từ backend
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     setLoading(true);
     try {
       const response = await getCart();
@@ -22,11 +22,11 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [fetchCart]);
 
   // Hàm thêm sản phẩm vào giỏ hàng
   const addProductToCart = async (productId, quantity = 1, size = "") => {
@@ -78,3 +78,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+export default CartProvider;

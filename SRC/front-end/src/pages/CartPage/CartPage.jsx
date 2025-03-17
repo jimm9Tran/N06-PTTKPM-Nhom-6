@@ -114,9 +114,9 @@ const CartPage = () => {
 
   // Tính toán tạm tính, thuế, phí vận chuyển và tổng tiền (ví dụ đơn giản)
   const subtotal = cart.totalPrice || cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-  const taxes = subtotal * 0.01;
+  // const taxes = subtotal * 0.01;
   const shipping = 0;
-  const total = subtotal + taxes + shipping;
+  const total = subtotal + shipping;
 
   return (
     <div className="min-h-screen py-8 bg-white dark:bg-gray-900 dark:text-white duration-200">
@@ -192,9 +192,9 @@ const CartPage = () => {
                           currency: "VND",
                         }).format(item.totalPrice || 0)}
                       </td>
-                      <td className="py-4 flex items-center justify-center">
+                      <td className="py-4 ">
                         <button
-                          className="text-red-500 hover:text-red-700 text-center w-8 h-8"
+                          className="text-red-500 hover:text-red-700 text-center w-8 h-8 "
                           onClick={() => handleDelete(item.product_id, item.size)}
                         >
                           x
@@ -218,7 +218,7 @@ const CartPage = () => {
           {/* Phần Tóm tắt (Summary) */}
           <div className="md:w-1/4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <h2 className="text-lg font-semibold mb-4">Tóm tắt</h2>
+              <h2 className="text-lg font-semibold mb-4">Tổng cộng giỏ hàng</h2>
               <div className="flex justify-between mb-2">
                 <span>Tạm tính</span>
                 <span>
@@ -228,7 +228,7 @@ const CartPage = () => {
                   }).format(subtotal)}
                 </span>
               </div>
-              <div className="flex justify-between mb-2">
+              {/* <div className="flex justify-between mb-2">
                 <span>Thuế (1%)</span>
                 <span>
                   {new Intl.NumberFormat("vi-VN", {
@@ -236,7 +236,7 @@ const CartPage = () => {
                     currency: "VND",
                   }).format(taxes)}
                 </span>
-              </div>
+              </div> */}
               <div className="flex justify-between mb-2">
                 <span>Phí vận chuyển</span>
                 <span>

@@ -28,7 +28,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Thực hiện hành động đăng xuất
     setUser(null);
   };
 
@@ -39,7 +38,6 @@ const Navbar = () => {
     }
   };
 
-  // Tính tổng số lượng sản phẩm từ giỏ hàng có trong CartContext
   const cartQuantity = cart && cart.products 
     ? cart.products.reduce((sum, item) => sum + item.quantity, 0) 
     : 0;

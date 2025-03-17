@@ -12,6 +12,7 @@ const userRoutes = require("./user.route");
 // const chatRoutes = require("./chat.route");
 const vnpayRoutes = require("./vnpay.route");
 const paymentRoute = require("./payment.route");
+const productCategoryRoute = require("./category.route");
 
 module.exports = (app) => {
     app.use(categoryMiddleware.category);
@@ -23,7 +24,9 @@ module.exports = (app) => {
     app.use("/cart", cartRoutes);
     app.use("/checkout", checkoutRoutes);
     app.use("/user", userRoutes);
-    app.use("/vnpay", vnpayRoutes);
-    app.use("/payment", paymentRoute);
+    // app.use("/vnpay", vnpayRoutes);
+    app.use("/checkout", paymentRoute);
+    // app.use("/payment", paymentRoute);
+    app.use("/", productCategoryRoute)
     // app.use("/chat", authMiddleware.requireAuth, chatRoutes);
 };

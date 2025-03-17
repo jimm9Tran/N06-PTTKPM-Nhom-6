@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../../pages/ProductsPage/ProductCard';
+import ProductCardSkeleton from '../ProductsPage/ProductCardSkeleton';
 import { getSearchResults } from '../../services/productService';
 import { toast } from 'react-toastify';
 
@@ -29,11 +30,9 @@ const SearchPage = () => {
         setLoading(false);
       }
     }
-    // Nếu có từ khóa, thực hiện tìm kiếm
     if (keyword) {
       fetchSearchResults();
     } else {
-      // Nếu không có từ khóa, hiển thị danh sách rỗng
       setProducts([]);
       setTotalPages(1);
       setLoading(false);
@@ -59,45 +58,51 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-2xl font-bold my-5 text-gray-800 dark:text-white">
-        Kết quả tìm kiếm cho: "{keyword}"
-      </h1>
-      {loading ? (
-        <div className="text-center text-gray-600 dark:text-gray-300">Loading...</div>
-      ) : products.length === 0 ? (
-        <div className="text-center text-gray-600 dark:text-gray-300">
-          Không tìm thấy sản phẩm nào.
-        </div>
-      ) : (
-        <>
+    <div className='bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden'>
+      <div className="container">
+        <h1 className="text-2xl font-bold my-5 text-gray-800 dark:text-white">
+          Kết quả tìm kiếm cho: "{keyword}"
+        </h1>
+        {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-            {products.map((product) => (
-              <ProductCard key={product._id || product.id} product={product} />
+            {Array.from({ length: 12 }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
             ))}
           </div>
-          {/* Phân trang */}
-          <div className="flex justify-center mt-6">
-            <button
-              onClick={handlePrev}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-l disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <div className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-              {currentPage} / {totalPages}
-            </div>
-            <button
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-r disabled:opacity-50"
-            >
-              Next
-            </button>
+        ) : products.length === 0 ? (
+          <div className="text-center text-gray-600 dark:text-gray-300">
+            Không tìm thấy sản phẩm nào.
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+              {products.map((product) => (
+                <ProductCard key={product._id || product.id} product={product} />
+              ))}
+            </div>
+            {/* Phân trang */}
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={handlePrev}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-l disabled:opacity-50 transition-colors"
+              >
+                Previous
+              </button>
+              <div className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                {currentPage} / {totalPages}
+              </div>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-r disabled:opacity-50 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
