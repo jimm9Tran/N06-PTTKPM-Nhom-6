@@ -52,10 +52,14 @@ block main
                 else
                   p Khách vãng lai
               td #{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(order.totalPrice)}
-              td #{order.status}
+              td
+                span.badge.bg-secondary #{order.status}
               td +formatDateTime(order.createdAt)
               td 
                 a.btn.btn-sm.btn-primary(href=`/admin/orders/${order._id}`) Chi tiết
+                if order.status === 'pending' || order.status === 'processing'
+                  a.btn.btn-sm.btn-success(href=`/admin/orders/${order._id}/update-status?status=shipped`) Đã giao hàng
+                  a.btn.btn-sm.btn-danger(href=`/admin/orders/${order._id}/update-status?status=cancelled`) Hủy đơn
     else
       p.text-center Không có đơn hàng nào.
 

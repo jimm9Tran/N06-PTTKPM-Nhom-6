@@ -29,95 +29,89 @@ block main
                 p.mb-0 Phân quyền: 
                   b #{role.title}
 
-    //- Thẻ thống kê chung
+    //- Thẻ thống kê chung với biểu đồ tròn
     .row.mb-4
-      .col-md-3
+      .col-md-6
         .card.text-center.mb-4
           .card-header.bg-secondary.text-white Danh mục sản phẩm
           .card-body
-            p Số lượng:
-              b #{statistic.categoryProduct.total}
-            p Hoạt động:
-              b #{statistic.categoryProduct.active}
-            p Dừng hoạt động:
-              b #{statistic.categoryProduct.inactive}
-      .col-md-3
+            canvas#categoryProductChart(width="300" height="300")
+
+      .col-md-6
         .card.text-center.mb-4
           .card-header.bg-secondary.text-white Sản phẩm
           .card-body
-            p Số lượng:
-              b #{statistic.product.total}
-            p Hoạt động:
-              b #{statistic.product.active}
-            p Dừng hoạt động:
-              b #{statistic.product.inactive}
-      .col-md-3
+            canvas#productChart(width="300" height="300")
+
+    .row.mb-4
+      .col-md-6
         .card.text-center.mb-4
           .card-header.bg-secondary.text-white Tài khoản admin
           .card-body
-            p Số lượng:
-              b #{statistic.account.total}
-            p Hoạt động:
-              b #{statistic.account.active}
-            p Dừng hoạt động:
-              b #{statistic.account.inactive}
-      .col-md-3
+            canvas#accountChart(width="300" height="300")
+
+      .col-md-6
         .card.text-center.mb-4
           .card-header.bg-secondary.text-white Người dùng
           .card-body
-            p Số lượng:
-              b #{statistic.user.total}
-            p Hoạt động:
-              b #{statistic.user.active}
-            p Dừng hoạt động:
-              b #{statistic.user.inactive}
-
-
-    .row.mb-4
-      .col-12
-        .card
-          .card-header.bg-dark.text-white Biểu đồ thống kê
-          .card-body
-            canvas#statsChart(width="400" height="150")
-    
+            canvas#userChart(width="300" height="300")
 
 block script
   script(src="https://cdn.jsdelivr.net/npm/chart.js")
   script.
-    const ctx = document.getElementById('statsChart').getContext('2d');
-    const statsChart = new Chart(ctx, {
-      type: 'bar', 
-      data: {
-        labels: ['Danh mục', 'Sản phẩm', 'Tài khoản', 'Người dùng'],
-        datasets: [{
-          label: 'Số lượng',
-          data: [
-            #{statistic.categoryProduct.total || 0},
-            #{statistic.product.total || 0},
-            #{statistic.account.total || 0},
-            #{statistic.user.total || 0}
-          ],
-          backgroundColor: [
-            'rgba(54, 162, 235, 0.7)',
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)'
-          ],
-          borderColor: [
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
+    const categoryProductData = [
+      #{statistic.categoryProduct.active || 0},
+      #{statistic.categoryProduct.inactive || 0}
+    ];
+    const productData = [
+      #{statistic.product.active || 0},
+      #{statistic.product.inactive || 0}
+    ];
+    const accountData = [
+      #{statistic.account.active || 0},
+      #{statistic.account.inactive || 0}
+    ];
+    const userData = [
+      #{statistic.user.active || 0},
+      #{statistic.user.inactive || 0}
+    ];
+
+    const categoryProductCtx = document.getElementById('categoryProductChart').getContext('2d');
+    const productCtx = document.getElementById('productChart').getContext('2d');
+    const accountCtx = document.getElementById('accountChart').getContext('2d');
+    const userCtx = document.getElementById('userChart').getContext('2d');
+
+    const createPieChart = (ctx, data) => {
+      return new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Hoạt động', 'Dừng hoạt động'],
+          datasets: [{
+            data: data,
+            backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)'],
+            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.label + ': ' + tooltipItem.raw + ' sản phẩm';
+                }
+              }
+            }
           }
         }
-      }
-    });
+      });
+    };
+
+    createPieChart(categoryProductCtx, categoryProductData);
+    createPieChart(productCtx, productData);
+    createPieChart(accountCtx, accountData);
+    createPieChart(userCtx, userData);

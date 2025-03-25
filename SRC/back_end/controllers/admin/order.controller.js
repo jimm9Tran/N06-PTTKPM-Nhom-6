@@ -1,5 +1,7 @@
 const Order = require("../../models/order.model");
 const Account = require("../../models/account.model");
+const Cart = require("../../models/cart.model");
+const Product = require("../../models/product.model");
 const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helpers/pagination");
 
@@ -29,6 +31,7 @@ exports.getOrders = async (req, res) => {
       .skip((currentPage - 1) * limit)
       .limit(parseInt(limit));
 
+    // Fetching full name of users
     for (const order of orders) {
       if (order.userInfo && order.userInfo.email) {
         const account = await Account.findOne({ email: order.userInfo.email });
@@ -38,7 +41,7 @@ exports.getOrders = async (req, res) => {
       }
     }
 
-    // Tạo đối tượng phân trang (bạn có thể dùng helper đã có)
+    // Pagination data
     const pagination = {
       currentPage,
       totalPages,
@@ -85,6 +88,13 @@ exports.updateOrderStatus = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const { status } = req.body;
+
+    // Validate if status update is allowed
+    const allowedStatuses = ["pending", "processing", "shipped", "cancelled"];
+    if (!allowedStatuses.includes(status)) {
+      req.flash("error", "Trạng thái đơn hàng không hợp lệ.");
+      return res.redirect("/admin/orders");
+    }
 
     const updatedOrder = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
     if (!updatedOrder) {

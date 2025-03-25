@@ -77,14 +77,12 @@ module.exports.index = async (req, res) => {
         .skip((objectPagination.currentPage - 1) * objectPagination.limitItems);
 
     for (const product of products) {
-        // Lấy ra thông tin người tạo
         const user = await Account.findOne({ _id : product.createdBy.account_id});
 
         if(user) {
             product.accountFullName = user.fullName;
         }
 
-        // Lấy ra thông tin người cập nhật gần nhất
         const updatedBy = product.updatedBy[product.updatedBy.length-1];
         if(updatedBy) {
             const userUpdated = await Account.findOne({
@@ -93,6 +91,8 @@ module.exports.index = async (req, res) => {
 
             updatedBy.accountFullName = userUpdated.fullName;
         }
+        
+        product.formattedPrice = product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
         
     }
 

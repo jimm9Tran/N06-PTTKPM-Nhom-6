@@ -78,7 +78,7 @@ block main
                                     td 
                                         img(src=item.thumbnail, alt=item.title, width="100px", height="auto")
                                     td #{item.title}
-                                    td #{item.price}$
+                                    td #{item.formattedPrice}
                                     td  
                                         input(
                                             type='number'
@@ -146,3 +146,12 @@ block main
             id="form-delete-item"
             data-path=`${prefixAdmin}/products/delete`
         )
+
+block script
+  script.
+    function formatPrice(price) {
+      if (price !== undefined && price !== null) {
+        return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+      }
+      return '0 đ'; 
+    }

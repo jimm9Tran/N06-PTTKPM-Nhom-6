@@ -214,3 +214,10 @@ if (sort) {
 // script.js
 
 
+
+function formatPrice(price) {
+    if (price !== undefined && price !== null) {
+        return price.toLocaleString('vi-VN') + ' đ';
+    }
+    return '0 đ'; // Trả về giá trị mặc định nếu không có giá
+}
