@@ -301,7 +301,6 @@ module.exports.editPatch = async (req, res) => {
     req.body.stock = parseInt(req.body.stock);
     req.body.position = parseInt(req.body.position);
   
-    // Xử lý sizes tương tự như createPost
     let sizesArr = [];
     if (req.body['sizes[][size]'] && req.body['sizes[][quantity]']) {
       let sizesValues = req.body['sizes[][size]'];

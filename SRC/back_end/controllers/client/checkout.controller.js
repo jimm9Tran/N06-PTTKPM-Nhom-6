@@ -1,4 +1,4 @@
-// controllers/client/checkout.controller.js
+// src/controllers/client/checkout.controller.js
 const Cart = require("../../models/cart.model");
 const Product = require("../../models/product.model");
 const Order = require("../../models/order.model");

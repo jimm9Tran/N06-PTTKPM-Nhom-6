@@ -5,7 +5,6 @@ const Cart = require("../../models/cart.model");
 // [GET] /cart - Lấy thông tin giỏ hàng
 module.exports.index = async (req, res) => {
   try {
-    // Lấy cart đã được middleware gắn ở req.cart
     const cart = await Cart.findById(req.cart._id).lean();
     if (!cart) {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
@@ -13,7 +12,6 @@ module.exports.index = async (req, res) => {
 
     // Lấy thông tin sản phẩm + tính totalPrice
     if (cart.products && cart.products.length > 0) {
-      // Chạy song song thay vì for loop
       const populatedProducts = await Promise.all(
         cart.products.map(async (item) => {
           const productInfor = await Product.findById(item.product_id)

@@ -11,7 +11,7 @@ const checkoutRoutes = require("./checkout.route");
 const userRoutes = require("./user.route");
 // const chatRoutes = require("./chat.route");
 const vnpayRoutes = require("./vnpay.route");
-const paymentRoute = require("./payment.route");
+// const paymentRoute = require("./payment.route");
 const productCategoryRoute = require("./category.route");
 const orderRoute = require('./order.route');
 
