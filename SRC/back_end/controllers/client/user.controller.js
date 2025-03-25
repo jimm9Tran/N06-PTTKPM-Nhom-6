@@ -32,7 +32,11 @@ module.exports.registerPost = async (req, res) => {
     });
     await user.save();
 
-    res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
+    res.cookie("tokenUser", user.tokenUser, { 
+      httpOnly: true, 
+      maxAge: 30 * 24 * 60 * 60 * 1000
+    });
+    
     return res.status(201).json({
       message: "Đăng ký thành công",
       user: {
@@ -68,10 +72,10 @@ module.exports.loginPost = async (req, res) => {
       return res.status(400).json({ error: "Tài khoản đang bị khóa!" });
     }
 
-    user.tokenUser = generateRandomTokenUser(); // refresh token
+    user.tokenUser = generateRandomTokenUser();
     await user.save();
 
-    res.cookie("tokenUser", user.tokenUser, { httpOnly: true });
+    res.cookie("tokenUser", user.tokenUser, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
 
     const cartIdInCookie = req.cookies.cartId;
     let guestCart = null;
@@ -95,9 +99,7 @@ module.exports.loginPost = async (req, res) => {
       }
     } else {
       if (guestCart && !guestCart.user_id && guestCart._id.toString() !== userCart._id.toString()) {
-        // Gộp sản phẩm
         for (let item of guestCart.products) {
-          // check trùng product_id + size
           const existing = userCart.products.find(
             (p) => p.product_id.toString() === item.product_id.toString() && p.size === item.size
           );
@@ -115,7 +117,7 @@ module.exports.loginPost = async (req, res) => {
 
     res.cookie("cartId", userCart._id.toString(), {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 ngày
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
       path: "/",
     });
 
@@ -135,10 +137,7 @@ module.exports.loginPost = async (req, res) => {
 
 // [GET] /user/logout
 module.exports.logout = async (req, res) => {
-  // Xoá cookie tokenUser
   res.clearCookie("tokenUser");
-  // Nếu muốn user trở thành guest cart, xoá luôn cartId:
-  // res.clearCookie("cartId");
   return res.json({ message: "Đăng xuất thành công" });
 };
 
@@ -160,7 +159,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
     const objectForgotPassword = {
       email,
       otp,
-      expriresAt: Date.now() + 3600000, // 1 giờ
+      expireAt: Date.now() + 3600000, // 1 giờ
     };
     const forgotPassword = new ForgotPassword(objectForgotPassword);
     await forgotPassword.save();
@@ -229,20 +228,49 @@ module.exports.resetPasswordPost = async (req, res) => {
   }
 };
 
-// [GET] /user/info
+// [GET] /user/info 
 module.exports.info = async (req, res) => {
   try {
     const tokenUser = req.cookies.tokenUser;
     if (!tokenUser) {
-      return res.status(401).json({ error: "Chưa đăng nhập" });
+      return res.status(401).json({ error: true, message: "Bạn chưa đăng nhập." });
     }
-    const infoUser = await User.findOne({ tokenUser }).select("-password");
+    const infoUser = await User.findOne({ tokenUser, deleted: false }).select("-password");
     if (!infoUser) {
-      return res.status(400).json({ error: "TokenUser không hợp lệ" });
+      return res.status(401).json({ error: true, message: "Token không hợp lệ hoặc tài khoản không tồn tại." });
     }
-    return res.json({ infoUser });
+    return res.status(200).json({ error: false, data: infoUser, message: "Lấy thông tin thành công." });
   } catch (error) {
     console.error("User info error:", error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: true, message: "Đã xảy ra lỗi, vui lòng thử lại sau." });
+  }
+};
+
+// [PATCH] /user/update 
+module.exports.update = async (req, res) => {
+  try {
+    const tokenUser = req.cookies.tokenUser;
+    if (!tokenUser) {
+      return res.status(401).json({ error: true, message: "Bạn chưa đăng nhập." });
+    }
+
+    const { fullName, email, phone } = req.body;
+
+    const user = await User.findOne({ tokenUser, deleted: false });
+    if (!user) {
+      return res.status(401).json({ error: true, message: "Token không hợp lệ hoặc tài khoản không tồn tại." });
+    }
+
+    user.fullName = fullName;
+    user.email = email;
+    user.phone = phone;
+
+    await user.save();
+
+    const updatedUser = await User.findOne({ tokenUser }).select("-password");
+    return res.status(200).json({ error: false, data: updatedUser, message: "Cập nhật thông tin thành công." });
+  } catch (error) {
+    console.error("Update user error:", error);
+    return res.status(500).json({ error: true, message: "Đã xảy ra lỗi, vui lòng thử lại sau." });
   }
 };

@@ -11,6 +11,8 @@ import OrderPage from "../pages/OrderPage/OrderPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
 import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 import ProductCategoryPage from "../pages/ProductCategoryPage/ProductCategoryPage.jsx";
+import UserProfileInfo from "../pages/UserProfilePage/UserProfilePage.jsx";
+import UserProfileEdit from "../pages/UserProfilePage/UserProfileEditPage.jsx";
 
 export const routes = [
   { path: '/', page: HomePage, isShowHeader: true, isShowFooter: true },
@@ -25,5 +27,7 @@ export const routes = [
   { path: '/checkout/failure', page: CheckoutFailure, isShowHeader: true, isShowFooter: true },
   { path: '/order', page: OrderPage, isShowHeader: true, isShowFooter: true },
   { path: '/search', page: SearchPage, isShowHeader: true, isShowFooter: true },
+  { path: '/user/info', page: UserProfileInfo, isShowHeader: true, isShowFooter: true },
+  { path: '/user/edit', page: UserProfileEdit, isShowHeader: true, isShowFooter: true },
   { path: '*', page: NotFoundPage, isShowHeader: false, isShowFooter: false }
 ];

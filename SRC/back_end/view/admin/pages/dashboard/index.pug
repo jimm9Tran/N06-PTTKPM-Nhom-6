@@ -1,68 +1,123 @@
 extends ../../layouts/default.pug
 
 block main
-    h1 Trang tổng quan 
+  .container.mt-5
+    //- Tiêu đề trang
+    .row.mb-4
+      .col-12.text-center
+        h1 Trang Tổng Quan Admin
 
-    .row.mt-4 
-        .col-12 
-            .card.mb-4 
-                .card-header Thông tin tài khoản 
-                .card-body 
-                    if(user.avatar)
-                        img(
-                            src=user.avatar
-                            style="height: 100px; margin-botton: 15px"
-                        )
-                    if(user.fullName)
-                        p Họ tên: <b>#{user.fullName}</b>
-                    if(user.email)
-                        p Email: <b>#{user.email}</b>
-                    if(user.phone)
-                        p Số điện thoại: <b>#{user.phone}</b>
-                    if(role.title)
-                        p Phân quyền: <b>#{role.title}</b>
-                    
+    //- Thông tin tài khoản admin
+    .row.mb-4
+      .col-12
+        .card.mb-4
+          .card-header.bg-info.text-white Thông tin tài khoản
+          .card-body.d-flex.align-items-center
+            if user.avatar
+              img(src=user.avatar, alt="Avatar", class="rounded-circle me-3", style="width: 100px; height: 100px; object-fit: cover;")
+            .flex-grow-1
+              if user.fullName
+                p.mb-1 Họ tên: 
+                  b #{user.fullName}
+              if user.email
+                p.mb-1 Email: 
+                  b #{user.email}
+              if user.phone
+                p.mb-1 Số điện thoại: 
+                  b #{user.phone}
+              if role.title
+                p.mb-0 Phân quyền: 
+                  b #{role.title}
 
-            .col-6
-                .card.mb-4
-                    .card-header Danh mục sản phẩm
-                    .card-body
-                        p Số lượng: 
-                            b #{statistic.categoryProduct.total}
-                        p Hoạt động: 
-                            b #{statistic.categoryProduct.active}
-                        p Dừng hoạt động: 
-                            b #{statistic.categoryProduct.inactive}
+    //- Thẻ thống kê chung
+    .row.mb-4
+      .col-md-3
+        .card.text-center.mb-4
+          .card-header.bg-secondary.text-white Danh mục sản phẩm
+          .card-body
+            p Số lượng:
+              b #{statistic.categoryProduct.total}
+            p Hoạt động:
+              b #{statistic.categoryProduct.active}
+            p Dừng hoạt động:
+              b #{statistic.categoryProduct.inactive}
+      .col-md-3
+        .card.text-center.mb-4
+          .card-header.bg-secondary.text-white Sản phẩm
+          .card-body
+            p Số lượng:
+              b #{statistic.product.total}
+            p Hoạt động:
+              b #{statistic.product.active}
+            p Dừng hoạt động:
+              b #{statistic.product.inactive}
+      .col-md-3
+        .card.text-center.mb-4
+          .card-header.bg-secondary.text-white Tài khoản admin
+          .card-body
+            p Số lượng:
+              b #{statistic.account.total}
+            p Hoạt động:
+              b #{statistic.account.active}
+            p Dừng hoạt động:
+              b #{statistic.account.inactive}
+      .col-md-3
+        .card.text-center.mb-4
+          .card-header.bg-secondary.text-white Người dùng
+          .card-body
+            p Số lượng:
+              b #{statistic.user.total}
+            p Hoạt động:
+              b #{statistic.user.active}
+            p Dừng hoạt động:
+              b #{statistic.user.inactive}
 
-            .col-6
-                .card.mb-4
-                    .card-header Sản phẩm
-                    .card-body
-                        p Số lượng: 
-                            b #{statistic.product.total}
-                        p Hoạt động: 
-                            b #{statistic.product.active}
-                        p Dừng hoạt động: 
-                            b #{statistic.product.inactive}
 
-            .col-6
-                .card.mb-4
-                    .card-header Tài khoản admin
-                    .card-body
-                        p Số lượng: 
-                            b #{statistic.account.total}
-                        p Hoạt động: 
-                            b #{statistic.account.active}
-                        p Dừng hoạt động: 
-                            b #{statistic.account.inactive}
+    .row.mb-4
+      .col-12
+        .card
+          .card-header.bg-dark.text-white Biểu đồ thống kê
+          .card-body
+            canvas#statsChart(width="400" height="150")
+    
 
-            .col-6
-                .card.mb-4
-                    .card-header Người dùng
-                    .card-body
-                        p Số lượng: 
-                            b #{statistic.user.total}
-                        p Hoạt động: 
-                            b #{statistic.user.active}
-                        p Dừng hoạt động: 
-                            b #{statistic.user.inactive}
+block script
+  script(src="https://cdn.jsdelivr.net/npm/chart.js")
+  script.
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const statsChart = new Chart(ctx, {
+      type: 'bar', 
+      data: {
+        labels: ['Danh mục', 'Sản phẩm', 'Tài khoản', 'Người dùng'],
+        datasets: [{
+          label: 'Số lượng',
+          data: [
+            #{statistic.categoryProduct.total || 0},
+            #{statistic.product.total || 0},
+            #{statistic.account.total || 0},
+            #{statistic.user.total || 0}
+          ],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });

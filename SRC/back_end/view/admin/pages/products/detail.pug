@@ -1,40 +1,80 @@
 extends ../../layouts/default.pug
 
 block main
-    if (product.title)
-        h1(class="mb-4") #{product.title}
-    
-    if (product.price)
-        div(class="mb-4") Giá: <b>#{product.price}$</b>
+  .container.mt-5
+    .row.justify-content-center
+      .col-lg-8
+        .card.shadow-lg
+          .card-header.bg-primary.text-white
+            .row
+              .col-md-9
+                h3.mb-0 #{product.title}
+              .col-md-3.text-end
+                a(
+                  href=`${prefixAdmin}/products/edit/${product.id}`
+                  class="btn btn-warning"
+                ) Chỉnh sửa
+          
+          .card-body
+            //- Hàng 1: Giá, Giảm giá và Số lượng
+            .row.mb-4.d-flex.align-items-center
+              .col-md-4
+                label Giá:
+              .col-md-8
+                span(style="font-weight: bold; font-size: 1.5rem") #{product.price}đ
 
-    if (product.discountPercentage)
-        div(class="mb-4") Giá: <b>#{product.discountPercentage}%</b>
+            .row.mb-4.d-flex.align-items-center
+              .col-md-4
+                label Giảm giá:
+              .col-md-8
+                span(style="font-weight: bold; font-size: 1.5rem") #{product.discountPercentage}%
 
-    if (product.stock)
-        div(class="mb-4") Còn lại: <b>#{product.stock}%</b>
+            .row.mb-4.d-flex.align-items-center
+              .col-md-4
+                label Số lượng:
+              .col-md-8
+                span(style="font-weight: bold; font-size: 1.25rem") #{product.stock}
 
-    if (product.thumbnail)
-        div(class="mb-4")
-            img(
-                src=product.thumbnail
-                style='witdth: 100px'
-            )
-    
-    if (product.status)
-        div(class="mb-4")
-            span Trạng thái:
-            if (product.status === "active")
-                span(class="badge badge-success") Hoạt động
-            else 
-                span(class="badge badge-danger") Dừng hoạt động
+            //- Hàng 2: Trạng thái sản phẩm
+            .row.mb-4.d-flex.align-items-center
+              .col-md-4
+                label Trạng thái:
+              .col-md-8
+                if (product.status == "active")
+                  span(class="badge badge-success") Hoạt động
+                else
+                  span(class="badge badge-danger") Dừng hoạt động
 
-    if (product.position)
-        div(class="mb-4") Vị trí: <b>#{product.position}</b>
+            //- Hàng 3: Hình ảnh sản phẩm
+            .row.mb-4
+              .col-md-4.text-center
+                if (product.thumbnail)
+                  img(
+                    src=product.thumbnail
+                    alt="Ảnh sản phẩm"
+                    class="img-fluid rounded"
+                    style="max-height: 300px; object-fit: cover;"
+                  )
 
-    if (product.position)
-        div(class="mb-4") !{product.description}
+            //- Hàng 4: Kích thước và số lượng size
+            if (product.sizes && product.sizes.length > 0)
+              .row.mb-4
+                .col-md-12
+                  h5 Kích thước:
+                  table(class="table table-bordered")
+                    thead
+                      tr
+                        th Kích thước
+                        th Số lượng
+                    tbody
+                      each size in product.sizes
+                        tr
+                          td #{size.size}
+                          td #{size.quantity}
 
-    a(
-        href=`${prefixAdmin}/products/edit/${product.id}`
-        class="btn btn-warning"
-    ) Chỉnh sửa
+            //- Hàng 5: Mô tả sản phẩm
+            .row.mb-4
+              .col-md-12
+                if (product.description)
+                  h5 Mô tả:
+                  p(style="font-size: 1.1rem; color: #555; line-height: 1.5") !{product.description}
