@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
   cart_id: String, 
   userInfo: {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     fullName: String,
     phone: String,
     address: String
@@ -19,8 +20,7 @@ const orderSchema = new mongoose.Schema({
   ],
   status: {
     type: String,
-    default: "pending" 
-    // pending, paid, shipping, completed, cancelled, ...
+    default: "pending"
   },
   deleted: {
     type: Boolean,

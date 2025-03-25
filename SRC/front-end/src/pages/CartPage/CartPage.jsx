@@ -1,52 +1,34 @@
 // src/pages/CartPage/CartPage.jsx
-import React, { useState, useEffect } from 'react';
-import { getCart, updateCart, deleteFromCart } from '../../services/cartService';
+import React, { useState, useEffect, useContext } from 'react';
+import { CartContext } from '../../context/CartContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
-  const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { cart, loading, error, fetchCart, updateProductQuantity, removeProductFromCart } = useContext(CartContext);
   const navigate = useNavigate();
-
-  // Hàm lấy thông tin giỏ hàng từ backend
-  const fetchCart = async () => {
-    try {
-      const response = await getCart();
-      setCart(response.data.cartDetail);
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-      setError("Lỗi khi tải giỏ hàng");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [fetchCart]);
 
   const handleQuantityChange = async (productId, newQuantity, size) => {
     const quantity = parseInt(newQuantity);
     if (isNaN(quantity) || quantity < 1) return;
     try {
-      await updateCart(productId, quantity, size);
+      await updateProductQuantity(productId, quantity, size);
       toast.success("Cập nhật giỏ hàng thành công");
-      fetchCart();
     } catch (err) {
       console.error("Error updating cart:", err);
       toast.error("Lỗi khi cập nhật sản phẩm");
     }
   };
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
   const handleDelete = async (productId, size) => {
     try {
-      await deleteFromCart(productId, size);
+      await removeProductFromCart(productId, size);
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
-      fetchCart();
     } catch (err) {
       console.error("Error deleting cart item:", err);
       toast.error("Lỗi khi xóa sản phẩm");
@@ -112,9 +94,7 @@ const CartPage = () => {
     );
   }
 
-  // Tính toán tạm tính, thuế, phí vận chuyển và tổng tiền (ví dụ đơn giản)
   const subtotal = cart.totalPrice || cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-  // const taxes = subtotal * 0.01;
   const shipping = 0;
   const total = subtotal + shipping;
 
@@ -124,7 +104,6 @@ const CartPage = () => {
         <h1 className="text-2xl font-semibold mb-4">Giỏ hàng của bạn</h1>
 
         <div className="flex flex-col md:flex-row gap-4">
-          {/* Danh sách sản phẩm */}
           <div className="md:w-3/4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4">
               <table className="w-full">
@@ -206,7 +185,6 @@ const CartPage = () => {
               </table>
             </div>
 
-            {/* Nút "Tiếp tục xem sản phẩm" */}
             <button
               onClick={() => navigate('/products')}
               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
@@ -215,7 +193,6 @@ const CartPage = () => {
             </button>
           </div>
 
-          {/* Phần Tóm tắt (Summary) */}
           <div className="md:w-1/4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <h2 className="text-lg font-semibold mb-4">Tổng cộng giỏ hàng</h2>
@@ -228,15 +205,6 @@ const CartPage = () => {
                   }).format(subtotal)}
                 </span>
               </div>
-              {/* <div className="flex justify-between mb-2">
-                <span>Thuế (1%)</span>
-                <span>
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(taxes)}
-                </span>
-              </div> */}
               <div className="flex justify-between mb-2">
                 <span>Phí vận chuyển</span>
                 <span>

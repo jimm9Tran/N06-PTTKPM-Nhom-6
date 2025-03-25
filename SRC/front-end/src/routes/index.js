@@ -23,7 +23,7 @@ export const routes = [
   { path: '/products/:slugCategory', page: ProductCategoryPage, isShowHeader: true, isShowFooter: true },
   { path: '/cart', page: CartPage, isShowHeader: true, isShowFooter: true },
   { path: '/checkout', page: CheckoutPage, isShowHeader: true, isShowFooter: true },
-  { path: '/checkout/success', page: CheckoutSuccess, isShowHeader: true, isShowFooter: true },
+  { path: '/checkout/success/:orderId', page: CheckoutSuccess, isShowHeader: true, isShowFooter: true },
   { path: '/checkout/failure', page: CheckoutFailure, isShowHeader: true, isShowFooter: true },
   { path: '/order', page: OrderPage, isShowHeader: true, isShowFooter: true },
   { path: '/search', page: SearchPage, isShowHeader: true, isShowFooter: true },

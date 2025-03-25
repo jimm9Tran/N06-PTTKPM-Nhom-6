@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../Shared/Button';
+import { Link } from 'react-router-dom';
 
 const Banner = ({ data }) => {
   return (
@@ -17,7 +17,12 @@ const Banner = ({ data }) => {
 
           {/* Second col */}
           <div data-aos="zoom-in" className='h-full flex items-center overflow-visible'>
-            <img src={data.img} alt={data.title} style={{ transform: "rotate(22deg) scale(1.8)" }} className='scale-125 w-[250px] md:w-[340px] mx-auto drop-shadow-2xl object-cover' />
+            <img 
+              src={data.img} 
+              alt={data.title} 
+              style={{ transform: "rotate(22deg) scale(1.8)" }} 
+              className='scale-125 w-[250px] md:w-[340px] mx-auto drop-shadow-2xl object-cover' 
+            />
           </div>
 
           {/* Third col */}
@@ -26,9 +31,11 @@ const Banner = ({ data }) => {
             <p data-aos="fade-up" className='text-3xl sm:text-5xl font-bold'>{data.title3}</p>
             <p data-aos="fade-up" className='text-sm tracking-wide leading-5'>{data.title4}</p>
             <div data-aos="fade-up" data-aos-offset="0">
-              <button style={{ color: data.bgColor }} className='bg-white py-2 px-4 rounded-full hover:scale-105 transition-transform'>
-                Mua ngay
-              </button>
+              <Link to={data.url}>
+                <button style={{ color: data.bgColor }} className='bg-white py-2 px-4 rounded-full hover:scale-105 transition-transform'>
+                  Mua ngay
+                </button>
+              </Link>
             </div>
           </div>
         </div>

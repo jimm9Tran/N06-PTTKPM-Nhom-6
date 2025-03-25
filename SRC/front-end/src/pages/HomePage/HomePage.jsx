@@ -24,6 +24,7 @@ const BannerData = {
   title4:
     "Air Jordan 1 Low “Paris” là một sự mới mẻ mang hình bóng Air Jordan 1 huyền thoại...",
   bgColor: "#f42c37",
+  url: "/products/detail/giay-nike-air-jordan-1-low-paris-cv3043-100-2025",
 };
 
 const BannerData2 = {
@@ -36,6 +37,7 @@ const BannerData2 = {
   title4:
     "Giày Nike Jordan 1 Low OG SP x Travis Scott ‘Medium Olive’ DM7866-200",
   bgColor: "#2dcc6f",
+  url: "/products/detail/giay-nike-air-jordan-1-low-paris-cv3043-100-2025",
 };
 
 const HomePage = () => {

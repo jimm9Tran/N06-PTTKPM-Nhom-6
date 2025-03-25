@@ -36,7 +36,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 dark:from-gray-800 dark:to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 dark:from-gray-900 dark:to-gray-900">
       <ToastContainer />
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row w-full max-w-4xl">
         {/* Phần bên trái: hình ảnh minh họa (chỉ hiển thị trên md trở lên) */}

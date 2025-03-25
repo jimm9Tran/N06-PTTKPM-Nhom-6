@@ -75,21 +75,17 @@ module.exports.order = async (req, res) => {
 module.exports.success = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('products.product_id', 'title thumbnail');
     if (!order) {
       return res.status(404).send("Đơn hàng không tồn tại.");
     }
     for (const product of order.products) {
-      const productInfo = await Product.findOne({ _id: product.product_id }).select("title thumbnail");
-      product.productInfo = productInfo;
       product.priceNew = productsHelper.calculateNewPrice(product);
       product.totalPrice = product.priceNew * product.quantity;
     }
     order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0);
-    res.render("client/pages/checkout/success", {
-      pageTitle: "Đặt hàng thành công",
-      order: order
-    });
+    
+    res.json(order); 
   } catch (error) {
     console.error("Error in checkout success:", error);
     res.status(500).send("Lỗi hệ thống! Không thể hiển thị đơn hàng.");

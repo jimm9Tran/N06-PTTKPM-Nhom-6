@@ -21,7 +21,7 @@ const HeroData = [
     subtitle: "Giày Nike Air Jordan 1 Low ‘Paris’ CV3043-100",
     title: "Nike Air Jordan 1",
     title2: "SNEAKER",
-    url: "/products",
+    url: "/products/detail/giay-nike-air-jordan-1-low-paris-cv3043-100-2025",
   },
 ];
 

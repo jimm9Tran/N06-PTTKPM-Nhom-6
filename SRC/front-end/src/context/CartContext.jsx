@@ -9,7 +9,6 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Hàm lấy giỏ hàng từ backend
   const fetchCart = useCallback(async () => {
     setLoading(true);
     try {
@@ -43,7 +42,7 @@ export const CartProvider = ({ children }) => {
   const updateProductQuantity = async (productId, quantity, size = "") => {
     try {
       await updateCart(productId, quantity, size);
-      await fetchCart();
+      await fetchCart(); 
     } catch (err) {
       console.error("Lỗi khi cập nhật sản phẩm:", err);
       setError("Lỗi khi cập nhật sản phẩm");
@@ -54,7 +53,7 @@ export const CartProvider = ({ children }) => {
   const removeProductFromCart = async (productId, size = "") => {
     try {
       await deleteFromCart(productId, size);
-      await fetchCart();
+      await fetchCart(); 
     } catch (err) {
       console.error("Lỗi khi xoá sản phẩm:", err);
       setError("Lỗi khi xoá sản phẩm khỏi giỏ hàng");
