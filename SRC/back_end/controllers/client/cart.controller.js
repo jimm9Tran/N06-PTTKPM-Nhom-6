@@ -2,7 +2,7 @@
 const Product = require("../../models/product.model");
 const Cart = require("../../models/cart.model");
 
-// [GET] /cart - Lấy thông tin giỏ hàng
+// [GET] /cart 
 module.exports.index = async (req, res) => {
   try {
     const cart = await Cart.findById(req.cart._id).lean();
@@ -10,7 +10,6 @@ module.exports.index = async (req, res) => {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
 
-    // Lấy thông tin sản phẩm + tính totalPrice
     if (cart.products && cart.products.length > 0) {
       const populatedProducts = await Promise.all(
         cart.products.map(async (item) => {
@@ -45,19 +44,16 @@ module.exports.addPost = async (req, res) => {
     const quantity = parseInt(req.query.quantity) || 1;
     const size = req.query.size || "";
 
-    // Lấy cart từ req
     const cart = await Cart.findById(req.cart._id);
     if (!cart) {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
 
-    // Kiểm tra product hợp lệ
     const productCheck = await Product.findById(productId);
     if (!productCheck) {
       return res.status(400).json({ error: "Sản phẩm không tồn tại." });
     }
 
-    // Kiểm tra đã có item với (productId + size) trong cart chưa
     const existsProductInCart = cart.products.find(
       (item) => item.product_id.toString() === productId && item.size === size
     );
@@ -90,7 +86,6 @@ module.exports.delete = async (req, res) => {
       return res.status(404).json({ error: "Giỏ hàng không tồn tại." });
     }
 
-    // Lọc bỏ item khớp productId, size
     cart.products = cart.products.filter(
       (item) => !(item.product_id.toString() === productId && item.size === size)
     );

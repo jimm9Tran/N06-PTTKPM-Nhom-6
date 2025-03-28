@@ -63,7 +63,7 @@ exports.getOrders = async (req, res) => {
   }
 };
 
-// [GET] /admin/orders/:orderId - Xem chi tiết đơn hàng
+// [GET] /admin/orders/:orderId 
 exports.getOrderDetail = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -83,13 +83,12 @@ exports.getOrderDetail = async (req, res) => {
   }
 };
 
-// [PATCH] /admin/orders/:orderId - Cập nhật trạng thái đơn hàng
+// [PATCH] /admin/orders/:orderId 
 exports.updateOrderStatus = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const { status } = req.body;
 
-    // Validate if status update is allowed
     const allowedStatuses = ["pending", "processing", "shipped", "cancelled"];
     if (!allowedStatuses.includes(status)) {
       req.flash("error", "Trạng thái đơn hàng không hợp lệ.");
